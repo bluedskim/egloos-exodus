@@ -1,0 +1,15 @@
+@startuml
+Actor User
+User -> Session_Manager : 탈출 요청
+Session_Manager -> Session_Manager : 새 세션 생성, 기본 정보 가져오기
+Session_Manager -> Session_Manager : hugo 기본 폴더구조 생성
+Session_Manager -> Blog_Fetcher : 블로그 다운로드 요청
+Blog_Fetcher -> Blog_Fetcher : 블로그 본문 추출
+Blog_Fetcher -> Blog_Fetcher : 삽입된 이미지 다운로드
+Blog_Fetcher -> Blog_Fetcher : MD 생성
+Blog_Fetcher -> Session_Manager: 블로그 다운로드 완료
+Session_Manager -> Hugo : html 생성/압축
+Session_Manager -> User : 완료 알림
+User -> Session_Manager : 다운로드
+Session_Manager -> Session_Manager : 폴더 삭제
+@enduml

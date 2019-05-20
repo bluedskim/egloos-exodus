@@ -1,0 +1,36 @@
+spring:
+  profiles:
+    active: "dev"
+  main:
+    banner-mode: "off"
+
+# https://springframework.guru/using-yaml-in-spring-boot-to-configure-logback/
+logging:
+  level:
+    org.dskim: DEBUG
+  pattern:
+#    console: "%d{yyyy-MM-dd HH:mm:ss} %highlight(%-5p) %green(%c{1}):%L - %m%n"
+#    console: "%d{yyyy-MM-dd HH:mm:ss} %highlight(%-5p) %green(%M):%L - %m%n"
+    console: "%d{yyyy-MM-dd HH:mm:ss} %highlight(%-5p) %green(%c{1}.%M):%L - %m%n"
+
+server:
+  email: bluedskim@gmail.com
+
+# 잘못하면 DDOS공격으로 오인 받을 수 있으므로 적당히 쉰다. (초)
+blog:
+  rootDir: /home/bluedskim/IdeaProjects/egloosExodus/blogRootDir
+  minSleepTime: 1
+
+---
+
+spring:
+  profiles: dev
+server:
+  port : 8081
+
+---
+
+spring:
+  profiles: prod
+server:
+  port: 8081
