@@ -14,7 +14,7 @@ public class EgloosBlogDownloaderDemo implements CommandLineRunner {
 	private static Logger logger = LoggerFactory.getLogger(EgloosBlogDownloaderDemo.class);
 
 	//String blogName = "netyhobby";
-	String blogName = "shed";
+	String blogName = "하고 싶은 걸 하세요 Do What You Want";
 	//String blogBaseUrl = "yeohans.egloos.com";	// 사진이 넘 많다.
 	String blogBaseUrl = "shed.egloos.com";
 
@@ -33,7 +33,7 @@ public class EgloosBlogDownloaderDemo implements CommandLineRunner {
 		hugo.init(blogName, blogName, "ananke");
 
 		logger.info("EXECUTING : command line runner");
-		egloosBlogDownloader.downLoadBlog(hugo, blogName, blogBaseUrl);
+		egloosBlogDownloader.downLoadBlog(hugo, blogBaseUrl);
 		//egloosBlogDownloader.downLoadBlog("blogName", "js61030.egloos.com"); // 실패
 		//egloosBlogDownloader.downLoadBlog("blogName", "news.egloos.com"); // 성공
 		//egloosBlogDownloader.downLoadBlog("blogName", "jculture.egloos.com"); //실패

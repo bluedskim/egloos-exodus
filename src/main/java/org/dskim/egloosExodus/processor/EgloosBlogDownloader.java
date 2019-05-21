@@ -40,12 +40,11 @@ public class EgloosBlogDownloader {
 	 * 블로그 메인 주소를 받아서 전체 블로그를 다운로드 한다.
 	 *
 	 * @param siteGen
-	 * @param blogName
 	 * @param blogBaseUrl
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean downLoadBlog(StaticSiteGeneratorDelegator siteGen, String blogName, String blogBaseUrl) throws Exception {
+	public boolean downLoadBlog(StaticSiteGeneratorDelegator siteGen, String blogBaseUrl) throws Exception {
 		boolean isSuccess = false;
 		this.blogName = blogName;
 		this.blogBaseUrl = blogBaseUrl;
