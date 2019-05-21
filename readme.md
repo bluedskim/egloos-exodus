@@ -2,6 +2,11 @@
 
 Spring Integration 으로 posting Lister, html downloader, html-to-markdown transformer, hugo invoker를 분리한다.
 
+<개발환경>
+* IntelliJ
+* Gradle5
+* Lombok
+
 <해야 할 작업>
 * 설정파일을 yaml로 변경
 * 이미지 width 100% 제거
