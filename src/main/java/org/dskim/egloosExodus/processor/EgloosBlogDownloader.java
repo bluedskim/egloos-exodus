@@ -29,8 +29,8 @@ public class EgloosBlogDownloader {
 	// 블로그 주소	ex) http://shed.egloos.com
 	String blogBaseUrl = null;
 
-	int currentBlogNo = 1;
-	//int currentBlogNo = 100;
+	//int currentBlogNo = 1;
+	int currentBlogNo = 100;
 	// int currentBlogNo = 10000;
 
 	@Value("${blog.minSleepTime}")

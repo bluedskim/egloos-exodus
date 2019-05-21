@@ -9,13 +9,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-//@SpringBootApplication
+@SpringBootApplication
 public class EgloosBlogDownloaderDemo implements CommandLineRunner {
 	private static Logger logger = LoggerFactory.getLogger(EgloosBlogDownloaderDemo.class);
 
-	String blogName = "netyhobby";
+	//String blogName = "netyhobby";
+	String blogName = "shed";
 	//String blogBaseUrl = "yeohans.egloos.com";	// 사진이 넘 많다.
-	String blogBaseUrl = "netyhobby.egloos.com";
+	String blogBaseUrl = "shed.egloos.com";
 
 	@Autowired
 	EgloosBlogDownloader egloosBlogDownloader;

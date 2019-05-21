@@ -18,7 +18,7 @@ server:
 
 # 잘못하면 DDOS공격으로 오인 받을 수 있으므로 적당히 쉰다. (초)
 blog:
-  rootDir: /home/bluedskim/IdeaProjects/egloosExodus/blogRootDir
+  rootDir: /home/bluedskim/imsi/eee/egloosexodus/blogRootDir
   minSleepTime: 1
 
 ---
