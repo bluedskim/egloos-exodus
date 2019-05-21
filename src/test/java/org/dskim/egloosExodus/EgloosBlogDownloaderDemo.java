@@ -30,7 +30,7 @@ public class EgloosBlogDownloaderDemo implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		hugo.init(blogName);
+		hugo.init(blogName, blogName, "ananke");
 
 		logger.info("EXECUTING : command line runner");
 		egloosBlogDownloader.downLoadBlog(hugo, blogName, blogBaseUrl);

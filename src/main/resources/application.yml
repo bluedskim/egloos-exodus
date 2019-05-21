@@ -16,9 +16,9 @@ logging:
 server:
   email: bluedskim@gmail.com
 
-# 잘못하면 DDOS공격으로 오인 받을 수 있으므로 적당히 쉰다. (초)
 blog:
   rootDir: /home/bluedskim/IdeaProjects/egloosexodus/blogRootDir
+  # 잘못하면 DDOS공격으로 오인 받을 수 있으므로 적당히 쉰다. (초)
   minSleepTime: 1
 
 ---

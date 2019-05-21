@@ -5,7 +5,7 @@ import org.dskim.egloosExodus.model.Post;
 import java.io.IOException;
 
 public interface StaticSiteGeneratorDelegator {
-	void init(String baseDir) throws Exception;
+	void init(String baseDir, String blogName, String themeName) throws Exception;
 	void saveImage(String[] imageUrl) throws IOException;
 
 	/**

@@ -8,17 +8,21 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dskim.egloosExodus.model.Post;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
+import org.yaml.snakeyaml.Yaml;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.util.Map;
 
 @Component
 public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	private static final Logger logger = LogManager.getLogger(HugoDelegator.class);
+
+	Yaml yaml = new Yaml();
 
 	@Value(("${blog.rootDir}"))
 	String rootDir;
@@ -33,22 +37,32 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 			  "{body}";
 
 	@Override
-	public void init(String baseDir) throws Exception {
+	public void init(String baseDir, String blogName, String themeName) throws Exception {
 		logger.debug("baseDir={}", baseDir);
 		this.baseDir = baseDir;
+
+		// theme파일
+		File zippedTheme = (new ClassPathResource(themeName + ".tgz")).getFile();
+
 		callCmd(new String[]{"rm", "-rf", rootDir + File.separator + baseDir}, null);
 		//callCmd(new String[]{"hugo", "new", "site", rootDir + File.separator + baseDir}, null);
 		//설정파일을 json형식을 사용
-		callCmd(new String[]{"hugo", "new", "site", rootDir + File.separator + baseDir, "-f", "json"}, null);
+		callCmd(new String[]{"hugo", "new", "site", rootDir + File.separator + baseDir, "-f", "yml"}, null);
 
 		//기본 테마 압축해제
 		//callCmd(new String[]{"tar", "-zxvf", rootDir + File.separator + "ananke.tgz", "-C", rootDir + File.separator + baseDir + File.separator + "themes/ananke", "--strip-components=1"}, null);
-		callCmd(new String[]{"tar", "-zxvf", rootDir + File.separator + "ananke.tgz", "-C", rootDir + File.separator + baseDir + File.separator + "themes"}, null);
+		callCmd(new String[]{"tar", "-zxvf", zippedTheme.getAbsolutePath(), "-C", rootDir + File.separator + baseDir + File.separator + "themes"}, null);
 
 		// config에 테마 추가
+		Map<String, Object> obj = yaml.load((new ClassPathResource("hugo.config.yml")).getInputStream());
+		obj.put("title", blogName);
+		obj.put("theme", themeName);
+		yaml.dump(obj, new FileWriter(rootDir + File.separator + baseDir + File.separator + "config.yml"));
+		/*
 		JSONObject hugoConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(new File(rootDir + File.separator + baseDir + File.separator + "config.json"), "utf8"));
 		hugoConfig.put("theme", "ananke");
 		FileUtils.writeStringToFile(new File(rootDir + File.separator + baseDir + File.separator + "config.json"), hugoConfig.toJSONString(), "utf8");
+		*/
 	}
 
 	@Override

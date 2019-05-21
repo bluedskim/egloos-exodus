@@ -8,7 +8,7 @@ Spring Integration 으로 posting Lister, html downloader, html-to-markdown tran
 * Lombok
 
 <해야 할 작업>
-* 설정파일을 yaml로 변경
+* ~~설정파일을 yaml로 변경~~
 * 이미지 width 100% 제거
 * category, tag지원
 * 헤드 이미지 지원
