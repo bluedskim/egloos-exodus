@@ -8,7 +8,7 @@ buildFuture:                false
 # include content already expired
 buildExpired:               false
 # enable this to make all relative URLs relative to content root. Note that this does not affect absolute URLs. See the "URL Management" page
-relativeURLs:               false
+relativeURLs:               true
 canonifyURLs:               false
 # config file (default is path/config.yaml|json|toml)
 config:                     "config.yml"
@@ -106,5 +106,5 @@ verboseLog:                 false
 # watch filesystem for changes and recreate as needed
 watch:                      true
 taxonomies:
-  - category:               "categories"
-  - tag:                    "tags"
+  category:               "categories"
+  tag:                    "tags"

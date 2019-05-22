@@ -9,8 +9,8 @@ Spring Integration 으로 posting Lister, html downloader, html-to-markdown tran
 
 <해야 할 작업>
 * ~~설정파일을 yaml로 변경~~
+* ~~헤드 이미지 지원~~
+* ~~category, tag지원~~
 * 이미지 width 100% 제거
-* category, tag지원
-* 헤드 이미지 지원
-* 미리보기 지원 : ex) http://samba.iptime.org/~aaa
+* ~~미리보기 지원 : ex) http://samba.iptime.org/~aaa~~
  

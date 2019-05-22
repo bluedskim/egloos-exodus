@@ -26,4 +26,20 @@ public class Post {
 	public String getUtcDate() {
 		return printFormatter.print(readFormatter.parseDateTime(date));
 	}
+
+	public String getFeaturedImage() {
+		if(getAttachments() != null) {
+			for (String[] attachment : getAttachments()) {
+				String tempImagePath = attachment[0].toLowerCase();
+				if(tempImagePath.indexOf("jpg") >= 0
+					|| tempImagePath.indexOf("png") >= 0
+					|| tempImagePath.indexOf("gif") >= 0) {
+					featuredImage = attachment[0];
+					break;
+				}
+			}
+		}
+		//return featuredImage;
+		return "";	// 헤더에 이미지가 표시되지 않는 문제있어 일단 사용하지 않음
+	}
 }

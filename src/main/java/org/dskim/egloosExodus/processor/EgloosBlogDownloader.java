@@ -2,6 +2,7 @@ package org.dskim.egloosExodus.processor;
 
 import lombok.Data;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dskim.egloosExodus.staticSiteGenerator.StaticSiteGeneratorDelegator;
@@ -30,7 +31,8 @@ public class EgloosBlogDownloader {
 	String blogBaseUrl = null;
 
 	//int currentBlogNo = 1;
-	int currentBlogNo = 100;
+	//int currentBlogNo = 100;
+	int currentBlogNo = 113;
 	// int currentBlogNo = 10000;
 
 	@Value("${blog.minSleepTime}")
@@ -144,8 +146,9 @@ public class EgloosBlogDownloader {
 							post.setAttachments(new ArrayList());
 						}
 						String imageIndex = Integer.toString(post.getAttachments().size()+1);
-						post.getAttachments().add(new String[]{"/attachment/" + post.getId() + "_" + imageIndex, image.attr("src")});
-						image.attr("src", "/attachment/" + post.getId() + "_" + imageIndex);
+						String tempImagePath = "/attachment/" + post.getId() + "_" + imageIndex + "." + StringUtils.substringAfterLast(image.attr("src"), ".");
+						post.getAttachments().add(new String[]{tempImagePath, image.attr("src")});
+						image.attr("src", tempImagePath);
 					}
 				}
 
@@ -158,6 +161,19 @@ public class EgloosBlogDownloader {
 				}
 				logger.debug("post.getBodyText()={}", post.getBodyText());
 				logger.debug("post.getBodyHtml()={}", post.getBodyHtml());
+
+				Element tagListContainer = blogPost.select("div.post_taglist").first();
+				if(tagListContainer != null) {
+					Elements tagAnchors = tagListContainer.select("a");
+					for (Element tagAnchor : tagAnchors) {
+						logger.debug("tagAnchor={}", tagAnchor.text());
+						if("".equals(post.getTags())) {
+							post.setTags("\"" + tagAnchor.text() + "\"");
+						} else {
+							post.setTags(post.getTags() + ",\"" + tagAnchor.text() + "\"");
+						}
+					}
+				}
 
 				//logger.debug("markdownmarkdownmarkdownmarkdown\n{}\nmarkdownmarkdownmarkdownmarkdown", htmlToMd(hentry.html()));
 

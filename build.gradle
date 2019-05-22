@@ -42,6 +42,7 @@ dependencies {
     compile group: 'joda-time', name: 'joda-time', version: '2.10.2'
     compile group: 'net.minidev', name: 'json-smart', version: '2.3'
     compile group: 'org.yaml', name: 'snakeyaml', version: '1.24'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testCompile group: 'junit', name: 'junit', version: '4.12'

@@ -1,7 +1,5 @@
 package org.dskim.egloosExodus.staticSiteGenerator;
 
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
@@ -9,13 +7,11 @@ import org.apache.logging.log4j.Logger;
 import org.dskim.egloosExodus.model.Post;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
 import java.net.URL;
-import java.nio.file.Files;
 import java.util.Map;
 
 @Component
@@ -30,6 +26,7 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	String postTemplate = "+++\n" +
 			  "title = \"{title}\"\n" +
 			  "date = \"{date}\"\n" +
+			  "categories = [{categories}]\n" +
 			  "tags = [{tags}]\n" +
 			  "featured_image = \"{featured_image}\"\n" +
 			  "description = \"{description}\"\n" +
@@ -66,13 +63,14 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	}
 
 	@Override
-	public void saveImage(String[] imageUrl) throws IOException {
+	public String saveImage(String[] imageUrl) throws IOException {
 		logger.debug("imageUrl={} / {}", imageUrl[0], imageUrl[1]);
 		try{
 			FileUtils.copyURLToFile(new URL(imageUrl[1]), new File(rootDir + File.separator + baseDir + "/content" + imageUrl[0]),5000,5000);
 		} catch(IOException e) {
 			logger.error("첨부 다운로드 오류는 무시함", e);
 		}
+		return imageUrl[0];
 	}
 
 	/**
@@ -93,6 +91,7 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 		outStr = outStr.replaceAll("created", "");
 		outStr = outStr.trim();
 		String tempPostTemplate = postTemplate.replace("{title}", post.getTitle());
+		tempPostTemplate = tempPostTemplate.replace("{categories}", "\"" + post.getCategory() + "\"");
 		tempPostTemplate = tempPostTemplate.replace("{date}", post.getUtcDate());
 		tempPostTemplate = tempPostTemplate.replace("{tags}", post.getTags());
 		tempPostTemplate = tempPostTemplate.replace("{featured_image}", post.getFeaturedImage());
