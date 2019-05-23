@@ -14,6 +14,9 @@ import java.io.*;
 import java.net.URL;
 import java.util.Map;
 
+/**
+ * Hugo 를 이용한 정적 사이트 생성
+ */
 @Component
 public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	private static final Logger logger = LogManager.getLogger(HugoDelegator.class);
@@ -33,6 +36,14 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 			  "+++\n" +
 			  "{body}";
 
+	/**
+	 * 블로그별로 호출해야 함
+	 *
+	 * @param baseDir 블로그폴더가 생성될 부모 폴더
+	 * @param blogName 블로그 명
+	 * @param themeName 사용할 테마명
+	 * @throws Exception
+	 */
 	@Override
 	public void init(String baseDir, String blogName, String themeName) throws Exception {
 		logger.debug("baseDir={}", baseDir);
@@ -62,18 +73,27 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 		*/
 	}
 
+	/**
+	 * 웹경로를 가지고 있는 각종 파일 다운로드
+	 *
+	 * (이 메소드는 유틸리티 어딘가로 옮겨야 할 듯)
+	 * @param resourceUrl
+	 * @return
+	 * @throws IOException
+	 */
 	@Override
-	public String saveImage(String[] imageUrl) throws IOException {
-		logger.debug("imageUrl={} / {}", imageUrl[0], imageUrl[1]);
+	public String saveResourceFromUrl(String[] resourceUrl) throws IOException {
+		logger.debug("resourceUrl={} / {}", resourceUrl[0], resourceUrl[1]);
 		try{
-			FileUtils.copyURLToFile(new URL(imageUrl[1]), new File(rootDir + File.separator + baseDir + "/content" + imageUrl[0]),5000,5000);
+			FileUtils.copyURLToFile(new URL(resourceUrl[1]), new File(rootDir + File.separator + baseDir + "/content" + resourceUrl[0]),5000,5000);
 		} catch(IOException e) {
 			logger.error("첨부 다운로드 오류는 무시함", e);
 		}
-		return imageUrl[0];
+		return resourceUrl[0];
 	}
 
 	/**
+	 * site generator 흘 호출하여 새로운 post 생성
 	 * hugo new "posts/aa/bb.md" -c /home/bluedskim/IdeaProjects/egloosExodus/blogRootDir/blogName/content
 	 * @param post
 	 */
@@ -102,15 +122,22 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 
 		if(post.getAttachments() != null) {
 			for (String[] attachment : post.getAttachments()) {
-				saveImage(attachment);
+				saveResourceFromUrl(attachment);
 			}
 		}
 	}
 
+	/**
+	 * 정적 사이트 생성
+	 * @return Static 엔진 호출 결과
+	 * @throws Exception
+	 */
 	@Override
-	public void generateStaticFles() throws Exception {
+	public String generateStaticFles() throws Exception {
 		logger.debug("baseDir={}", baseDir);
-		callCmd(new String[]{"hugo", "-s", rootDir + File.separator + baseDir}, null);
+		String generateStaticFlesRtn = callCmd(new String[]{"hugo", "-s", rootDir + File.separator + baseDir}, null);
+		logger.debug("generateStaticFlesRtn={}", generateStaticFlesRtn);
+		return generateStaticFlesRtn;
 	}
 
 	/**

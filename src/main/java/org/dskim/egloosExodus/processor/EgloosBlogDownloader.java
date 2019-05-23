@@ -14,6 +14,7 @@ import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -49,13 +50,14 @@ public class EgloosBlogDownloader {
 	public boolean downLoadBlog(StaticSiteGeneratorDelegator siteGen, String blogBaseUrl) throws Exception {
 		boolean isSuccess = false;
 		this.blogName = blogName;
-		this.blogBaseUrl = blogBaseUrl;
+		this.blogBaseUrl = StringUtils.substringBeforeLast(blogBaseUrl, "/");
 
-		List<Post> postList = null;
-		while((postList = getBlogContent("http://" + blogBaseUrl + "/page/" + (currentBlogNo++))) != null) {
-			for(Post post : postList) {
-				siteGen.createPost(post);
-			}
+		String postUrl = getFirstPostUrl(blogBaseUrl);
+		Post post = null;
+		while((post = getPost(postUrl)) != null) {
+			siteGen.createPost(post);
+			postUrl = post.getPrevPostUrl();
+
 			//long sleepTime = minSleepTime * 1000 * (1L + (long) (Math.random() * (3L - 1L)));
 			long sleepTime = minSleepTime * 1000 + (long)(1000 * 2 * Math.random());
 			logger.debug("sleeping... {}", sleepTime);
@@ -69,7 +71,138 @@ public class EgloosBlogDownloader {
 	}
 
 	/**
-	 * 해당 페이지의 블로그를 읽어온다.
+	 * 해당 블로그의 첫번째 글 주소를 가져온다.
+	 * @param entryUrl
+	 * @return
+	 * @throws IOException
+	 */
+	public String getFirstPostUrl(String entryUrl) throws IOException {
+		String firstPostUrl = null;
+
+		Document document = Jsoup.connect(entryUrl).get();
+		logger.debug("document.title()={}", document.title());
+
+		/*
+		Element link = document.select("body > div.body > div > div.header > h1 > a").get(0);
+		logger.debug("blogName={}", link.text());
+		*/
+
+		//logger.debug("등록된 포스트가 없습니다?={}", document.select("div:contains(등록된 포스트가 없습니다.)"));
+
+		// 더 이상 블로그가 없다면
+		if(document.select("div:contains(등록된 포스트가 없습니다.)").size() > 0) {
+			logger.debug("등록된 포스트가 없습니다.");
+			return null;
+		}
+
+		Element postAnchor = document.selectFirst("h2.entry-title > a");
+		firstPostUrl = blogBaseUrl + postAnchor.attr("href");
+		logger.debug("firstPostUrl={}", firstPostUrl);
+
+		return firstPostUrl;
+	}
+
+	public Post getPost(String postUrl) throws Exception {
+		if(postUrl == null) return null;
+		Post post = new Post();
+
+		Document document = Jsoup.connect(postUrl).get();
+		logger.debug("document.title()={}", document.title());
+
+		// 더 이상 블로그가 없다면
+		if(document.select("div:contains(등록된 포스트가 없습니다.)").size() > 0) {
+			logger.debug("등록된 포스트가 없습니다.");
+			return null;
+		}
+
+		Element blogPost = document.selectFirst("div.post_view");
+
+		//'신고' 삭제
+		blogPost.selectFirst("span:matchesOwn(신고)").parent().parent().remove();
+
+		//logger.debug("blogPost={}", blogPost);
+		Element postTitleArea = blogPost.select("div.post_title_area").first();
+		//logger.debug("entry-title={}", postTitleArea);
+		Element title = blogPost.select("a").first();
+		logger.debug("title={}", title.text());
+		post.setTitle(title.text());
+		post.setId(title.attr("name"));
+
+		Element category = blogPost.selectFirst("span.post_title_category");
+		post.setCategory(category.text());
+
+		Element date = blogPost.select("abbr").first();
+		logger.debug("date={}", date.text());
+		post.setDate(date.text());
+		//Element commentCount = postTitleArea.select("span.txt").first();
+
+		//logger.debug("덧글수={}", new StringTokenizer(commentCount.text(), ":").);
+		if(postTitleArea.select("ul > li.post_info_cmtcount") != null
+				&& postTitleArea.select("ul > li.post_info_cmtcount").size() > 0) {
+			Element commentCount = postTitleArea.select("ul > li.post_info_cmtcount").first();
+			logger.debug("덧글수=[{}]", commentCount.text().substring(commentCount.text().lastIndexOf(": ")+1).trim());
+		} else {
+			logger.debug("덧글수 없음");
+		}
+
+		Elements images = blogPost.select("img[src~=(?i)\\.(png|jpe?g|gif)]");
+		for (Element image : images) {
+			/*
+			System.out.println("\nsrc : " + image.attr("src"));
+			System.out.println("height : " + image.attr("height"));
+			System.out.println("width : " + image.attr("width"));
+			System.out.println("alt : " + image.attr("alt"));
+			*/
+			// 이런 이미지들은 제외 http://md.egloos.com/img/icon/ico_badreport.png
+			if(image.attr("src").contains("/md") == false
+					&& image.attr("src").contains("/profile") == false ) {
+				logger.debug(" \t img src={}", image.attr("src"));
+				if(post.getAttachments() == null) {
+					post.setAttachments(new ArrayList());
+				}
+				String imageIndex = Integer.toString(post.getAttachments().size()+1);
+				String tempImagePath = "/attachment/" + post.getId() + "_" + imageIndex + "." + StringUtils.substringAfterLast(image.attr("src"), ".");
+				post.getAttachments().add(new String[]{tempImagePath, image.attr("src")});
+				image.attr("src", tempImagePath);
+			}
+		}
+
+		Element hentry = blogPost.select("div.hentry").first();
+		post.setBodyText(hentry.text());
+		post.setBodyHtml(hentry.html());
+		Element comment = blogPost.select("ul.comment_list").first();
+		if(comment != null) {
+			post.setBodyHtml(post.getBodyHtml() + "\n\n<ul>" + comment.html() + "</ul>");
+		}
+		logger.debug("post.getBodyText()={}", post.getBodyText());
+		logger.debug("post.getBodyHtml()={}", post.getBodyHtml());
+
+		Element tagListContainer = blogPost.select("div.post_taglist").first();
+		if(tagListContainer != null) {
+			Elements tagAnchors = tagListContainer.select("a");
+			for (Element tagAnchor : tagAnchors) {
+				logger.debug("tagAnchor={}", tagAnchor.text());
+				if("".equals(post.getTags())) {
+					post.setTags("\"" + tagAnchor.text() + "\"");
+				} else {
+					post.setTags(post.getTags() + ",\"" + tagAnchor.text() + "\"");
+				}
+			}
+		}
+
+		Element prevPostAnchor = document.selectFirst("div.next > a");
+		if(prevPostAnchor != null) {
+			post.setPrevPostUrl(blogBaseUrl + prevPostAnchor.attr("href"));
+		} else {
+			logger.debug("마지막 postUrl={}", postUrl);
+		}
+
+		logger.debug("post={}", post);
+		return post;
+	}
+
+	/**
+	 * 해당 페이지의 블로그 내용을 읽어온다.
 	 * 마지막 블로그라면 null 반환
 	 *
 	 * @param blogPostUrl
@@ -184,6 +317,13 @@ public class EgloosBlogDownloader {
 		return postList;
 	}
 
+	/**
+	 * 잘 동작하지 않더라. 그래서 md로 변환하지 않고 html 을 그대로 삽입할 것임
+	 * @deprecated
+	 * @param html
+	 * @return
+	 * @throws Exception
+	 */
 	private String htmlToMd(String html) throws Exception {
 		String mdStr = null;
 		//ProcessBuilder builder = new ProcessBuilder("/home/bluedskim/Utils/shell/echoFromStdIn.sh");

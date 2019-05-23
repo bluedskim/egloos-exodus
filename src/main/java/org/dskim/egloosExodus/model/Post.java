@@ -19,6 +19,7 @@ public class Post {
 	String bodyHtml;
 	String category;
 	String tags = "";
+	String prevPostUrl;
 	DateTimeFormatter readFormatter = DateTimeFormat.forPattern("yyyy/MM/dd HH:mm");
 	DateTimeFormatter printFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ");
 	List<String[]> attachments;	// 첨부파일 정보 {"상대 경로", "절대 경로"}
