@@ -18,9 +18,9 @@ Spring Integration 으로 posting Lister, html downloader, html-to-markdown tran
 * ~~설정파일을 yaml로 변경~~
 * ~~헤드 이미지 지원~~
 * ~~category, tag지원~~
-* 이미지 width 100% 제거
+* ~~이미지 width 100% 제거~~
 * ~~미리보기 지원 : ex) http://samba.iptime.org/~aaa~~
-* 상세화면에서 내용가져와야 덧글, '이어지는 내용'(netyhobby.egloos.com) 처리 가능함.
+* ~~상세화면에서 내용가져와야 덧글, '이어지는 내용'(netyhobby.egloos.com) 처리 가능함.~~
 * 웹인터페이스 제공
 * 다운로드 완료시 이메일 발송
 * 24시간이 지난 블로그 자동 삭제

@@ -54,7 +54,6 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 
 		callCmd(new String[]{"rm", "-rf", rootDir + File.separator + baseDir}, null);
 		//callCmd(new String[]{"hugo", "new", "site", rootDir + File.separator + baseDir}, null);
-		//설정파일을 json형식을 사용
 		callCmd(new String[]{"hugo", "new", "site", rootDir + File.separator + baseDir, "-f", "yml"}, null);
 
 		//기본 테마 압축해제
@@ -71,6 +70,10 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 		hugoConfig.put("theme", "ananke");
 		FileUtils.writeStringToFile(new File(rootDir + File.separator + baseDir + File.separator + "config.json"), hugoConfig.toJSONString(), "utf8");
 		*/
+
+		//static 에 필요 파일들 복사
+		FileUtils.copyFile(new ClassPathResource("hugo.custom.css").getFile()
+				, new File(rootDir + File.separator + baseDir + File.separator + "static" + File.separator + "custom.css"));
 	}
 
 	/**

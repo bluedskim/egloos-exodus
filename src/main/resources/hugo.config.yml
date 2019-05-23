@@ -108,3 +108,5 @@ watch:                      true
 taxonomies:
   category:               "categories"
   tag:                    "tags"
+params:
+  custom_css: [custom.css]
