@@ -13,11 +13,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class EgloosBlogDownloaderDemo implements CommandLineRunner {
 	private static Logger logger = LoggerFactory.getLogger(EgloosBlogDownloaderDemo.class);
 
-	String blogName = "하고 싶은 걸 하세요 Do What You Want";
-	String blogBaseUrl = "http://shed.egloos.com/1207526";
+	//String blogName = "하고 싶은 걸 하세요 Do What You Want";
+	//String blogBaseUrl = "http://shed.egloos.com/1207526";
 
-	//String blogName = "netyhobby";
-	//String blogBaseUrl = "yeohans.egloos.com";	// 사진이 넘 많다.
+	String blogName = "산바람이 만난 자연의 친구들";
+	String blogBaseUrl = "http://yeohans.egloos.com/5979275";	// 사진이 넘 많다.
 
 	//String blogName = "플로렌스의 네티하비 블로그";
 	//String blogBaseUrl = "http://netyhobby.egloos.com/1025728";

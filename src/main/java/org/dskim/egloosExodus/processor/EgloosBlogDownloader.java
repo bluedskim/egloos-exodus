@@ -107,18 +107,24 @@ public class EgloosBlogDownloader {
 		Post post = new Post();
 
 		Document document = Jsoup.connect(postUrl).get();
-		logger.debug("document.title()={}", document.title());
+		logger.debug("postUrl={}, document.title()={}", postUrl, document.title());
 
 		// 더 이상 블로그가 없다면
+		/*	// 더 이상 블로그가 없다면 이 메소드가 호출되지 않았을 것이므로 무의미한 코딩임.
+		logger.debug("document.select(\"div:contains(등록된 포스트가 없습니다.)\").size()={}", document.select("div:contains(등록된 포스트가 없습니다.)").size());
 		if(document.select("div:contains(등록된 포스트가 없습니다.)").size() > 0) {
 			logger.debug("등록된 포스트가 없습니다.");
 			return null;
 		}
+		*/
 
 		Element blogPost = document.selectFirst("div.post_view");
 
 		//'신고' 삭제
-		blogPost.selectFirst("span:matchesOwn(신고)").parent().parent().remove();
+		Element 신고 = blogPost.selectFirst("span:matchesOwn(신고)");
+		if(신고 != null) {
+			신고.parent().parent().remove();
+		}
 
 		//logger.debug("blogPost={}", blogPost);
 		Element postTitleArea = blogPost.select("div.post_title_area").first();
