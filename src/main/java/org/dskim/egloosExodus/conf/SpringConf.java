@@ -3,10 +3,14 @@ package org.dskim.egloosExodus.conf;
 import org.dskim.egloosExodus.staticSiteGenerator.HugoDelegator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.Executor;
 
 @Configuration
+@EnableAsync
 public class SpringConf {
 	//@Bean
 	/*
@@ -26,4 +30,9 @@ public class SpringConf {
 		return new HugoDelegator();
 	}
 	*/
+
+	@Bean(name = "threadPoolTaskExecutor")
+	public Executor threadPoolTaskExecutor() {
+		return new ThreadPoolTaskExecutor();
+	}
 }

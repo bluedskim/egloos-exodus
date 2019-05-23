@@ -39,15 +39,14 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	/**
 	 * 블로그별로 호출해야 함
 	 *
-	 * @param baseDir 블로그폴더가 생성될 부모 폴더
 	 * @param blogName 블로그 명
 	 * @param themeName 사용할 테마명
 	 * @throws Exception
 	 */
 	@Override
-	public void init(String baseDir, String blogName, String themeName) throws Exception {
-		logger.debug("baseDir={}", baseDir);
-		this.baseDir = baseDir;
+	public void init(String blogName, String themeName) throws Exception {
+		logger.debug("blogName={}", blogName);
+		this.baseDir = blogName;
 
 		// theme파일
 		File zippedTheme = (new ClassPathResource(themeName + ".tgz")).getFile();

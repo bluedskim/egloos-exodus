@@ -39,6 +39,8 @@ public class EgloosBlogDownloader {
 	@Value("${blog.minSleepTime}")
 	int minSleepTime;
 
+	public boolean isDownloading = false;
+
 	/**
 	 * 블로그 메인 주소를 받아서 전체 블로그를 다운로드 한다.
 	 *
@@ -49,6 +51,7 @@ public class EgloosBlogDownloader {
 	 */
 	public boolean downLoadBlog(StaticSiteGeneratorDelegator siteGen, String blogBaseUrl) throws Exception {
 		boolean isSuccess = false;
+		isDownloading = true;
 		this.blogName = blogName;
 		this.blogBaseUrl = StringUtils.substringBeforeLast(blogBaseUrl, "/");
 
@@ -67,6 +70,7 @@ public class EgloosBlogDownloader {
 		this.blogName = null;
 		this.blogBaseUrl = null;
 		currentBlogNo = 1;
+		isDownloading = false;
 		return isSuccess;
 	}
 
@@ -77,6 +81,7 @@ public class EgloosBlogDownloader {
 	 * @throws IOException
 	 */
 	public String getFirstPostUrl(String entryUrl) throws IOException {
+		logger.debug("entryUrl={}", entryUrl);
 		String firstPostUrl = null;
 
 		Document document = Jsoup.connect(entryUrl).get();
