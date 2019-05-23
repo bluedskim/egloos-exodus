@@ -13,4 +13,5 @@ Spring Integration 으로 posting Lister, html downloader, html-to-markdown tran
 * ~~category, tag지원~~
 * 이미지 width 100% 제거
 * ~~미리보기 지원 : ex) http://samba.iptime.org/~aaa~~
+* 상세화면에서 내용가져와야 덧글, 더보기 처리 가능함.
  
