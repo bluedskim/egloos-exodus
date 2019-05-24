@@ -26,6 +26,7 @@ public class EgloosBlogDownloaderDemo implements CommandLineRunner {
 	//String blogName = "무릉도원에서 삼라만담";
 	//String blogBaseUrl = "http://atonal.egloos.com/391150";
 
+	//
 	String blogName = "라이트노벨 레이블 노블엔진";
 	String blogBaseUrl = "http://novelengin.egloos.com/1327230";
 

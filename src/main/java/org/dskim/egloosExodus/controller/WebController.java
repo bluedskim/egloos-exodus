@@ -23,20 +23,21 @@ public class WebController {
 
     @GetMapping("")
     public String index(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
-        logger.debug("model={}", model);
+        logger.debug("blogDownloaderManager.getCurrentBlog()={}", blogDownloaderManager.getCurrentBlog());
+
         model.addAttribute("name", name);
-        model.addAttribute("egloosBlogDownloader", egloosBlogDownloader);
+        model.addAttribute("currentBlog", blogDownloaderManager.getCurrentBlog());
         return "index";
     }
 
     @PostMapping("download")
     public String download(Blog blog, Model model) throws Exception {
         logger.debug("blog={}", blog);
+        logger.debug("blogDownloaderManager.getCurrentBlog()={}", blogDownloaderManager.getCurrentBlog());
 
         blogDownloaderManager.downloadBlog(blog);
 
-        model.addAttribute("egloosBlogDownloader", egloosBlogDownloader);
-        model.addAttribute("blog", blog);
+        model.addAttribute("currentBlog", blog);
         return "index";
     }
 }

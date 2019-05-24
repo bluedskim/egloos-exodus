@@ -13,10 +13,10 @@
     <li>이미 다른 블로그를 다운로드 작업 중이라면 기다리셔야 합니다.</li>
 </ol>
 
-<span th:if="${egloosBlogDownloader.isDownloading == true}">
-    <p th:text="'현재 ' + ${egloosBlogDownloader.blogName} + '을(를) 다운로드 중입니다.'" />
+<span th:if="${currentBlog != null}">
+    <p th:text="'현재 ' + ${currentBlog.blogName} + '을(를) 다운로드 중입니다.'" />
 </span>
-<span th:unless="${egloosBlogDownloader.isDownloading == true}">
+<span th:unless="${currentBlog != null}">
     <hr/>
     <h2>블로그 정보 입력</h2>
     <form method="post" action="download">

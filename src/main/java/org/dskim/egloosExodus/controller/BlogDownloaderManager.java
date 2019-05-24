@@ -1,5 +1,6 @@
 package org.dskim.egloosExodus.controller;
 
+import lombok.Data;
 import org.dskim.egloosExodus.model.Blog;
 import org.dskim.egloosExodus.processor.EgloosBlogDownloader;
 import org.dskim.egloosExodus.staticSiteGenerator.HugoDelegator;
@@ -10,6 +11,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
+@Data
 public class BlogDownloaderManager {
     private static Logger logger = LoggerFactory.getLogger(BlogDownloaderManager.class);
 
@@ -19,16 +21,25 @@ public class BlogDownloaderManager {
     @Autowired
     EgloosBlogDownloader egloosBlogDownloader;
 
+    Blog currentBlog;
+
     @Async("threadPoolTaskExecutor")
     public void downloadBlog(Blog blog) throws Exception {
+        this.currentBlog = blog;
         hugo.init(blog.getBlogName(), "ananke");
 
-        egloosBlogDownloader.downLoadBlog(hugo, blog.getBlogBaseUrl());
+        try {
+            egloosBlogDownloader.downLoadBlog(hugo, blog.getBlogBaseUrl());
+        } catch(Exception e) {
+            logger.error("Exeption 발생하여 다운로드 중지!!!", e);
+            this.currentBlog = null;
+        }
 
         //egloosBlogDownloader.downLoadBlog("blogName", "js61030.egloos.com"); // 실패
         //egloosBlogDownloader.downLoadBlog("blogName", "news.egloos.com"); // 성공
         //egloosBlogDownloader.downLoadBlog("blogName", "jculture.egloos.com"); //실패
 
         hugo.generateStaticFles();
+        this.currentBlog = null;
     }
 }
