@@ -98,7 +98,7 @@ title:                      ""
 # Title Case style guide for the title func and other automatic title casing in Hugo.
 titleCaseStyle:             "AP"
 # if true, use /filename.html instead of /filename/
-uglyURLs:                   false
+uglyURLs:                   true
 # verbose output
 verbose:                    false
 # verbose logging

@@ -210,7 +210,7 @@ public class EgloosBlogDownloader {
 			logger.debug("마지막 postUrl={}", postUrl);
 		}
 
-		logger.debug("post={}", post);
+		logger.debug("post.getUtcDate()={}, post.getTitle()={}", post.getUtcDate(), post.getTitle());
 		return post;
 	}
 
