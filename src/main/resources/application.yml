@@ -29,7 +29,13 @@ blog:
 spring:
   profiles: dev
 
+hugo:
+  resourcesDir: /home/bluedskim/IdeaProjects/egloosexodus/hugoResources
+
 ---
 
 spring:
   profiles: prod
+
+hugo:
+  resourcesDir:

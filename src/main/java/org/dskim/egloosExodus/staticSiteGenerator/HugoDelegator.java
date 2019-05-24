@@ -36,6 +36,9 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 			  "+++\n" +
 			  "{body}";
 
+	@Value(("${hugo.resourcesDir}"))
+	String hugoResourcesDir;
+
 	/**
 	 * 블로그별로 호출해야 함
 	 *
@@ -48,19 +51,16 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 		logger.debug("blogName={}", blogName);
 		this.baseDir = blogName;
 
-		// theme파일
-		File zippedTheme = (new ClassPathResource(themeName + ".tgz")).getFile();
-
 		callCmd(new String[]{"rm", "-rf", rootDir + File.separator + baseDir}, null);
 		//callCmd(new String[]{"hugo", "new", "site", rootDir + File.separator + baseDir}, null);
 		callCmd(new String[]{"hugo", "new", "site", rootDir + File.separator + baseDir, "-f", "yml"}, null);
 
 		//기본 테마 압축해제
 		//callCmd(new String[]{"tar", "-zxvf", rootDir + File.separator + "ananke.tgz", "-C", rootDir + File.separator + baseDir + File.separator + "themes/ananke", "--strip-components=1"}, null);
-		callCmd(new String[]{"tar", "-zxvf", zippedTheme.getAbsolutePath(), "-C", rootDir + File.separator + baseDir + File.separator + "themes"}, null);
+		callCmd(new String[]{"tar", "-zxvf", hugoResourcesDir + File.separator + themeName + ".tgz", "-C", rootDir + File.separator + baseDir + File.separator + "themes"}, null);
 
 		// config에 테마 추가
-		Map<String, Object> obj = yaml.load((new ClassPathResource("hugo.config.yml")).getInputStream());
+		Map<String, Object> obj = yaml.load(new FileReader(hugoResourcesDir + File.separator + "hugo.config.yml"));
 		obj.put("title", blogName);
 		obj.put("theme", themeName);
 		yaml.dump(obj, new FileWriter(rootDir + File.separator + baseDir + File.separator + "config.yml"));
@@ -71,7 +71,7 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 		*/
 
 		//static 에 필요 파일들 복사
-		FileUtils.copyFile(new ClassPathResource("hugo.custom.css").getFile()
+		FileUtils.copyFile(new File(hugoResourcesDir + File.separator + "hugo.custom.css")
 				, new File(rootDir + File.separator + baseDir + File.separator + "static" + File.separator + "custom.css"));
 	}
 

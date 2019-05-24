@@ -1,0 +1,1 @@
+pkill -9 -f egloosexodus-1.0-SNAPSHOT.jar

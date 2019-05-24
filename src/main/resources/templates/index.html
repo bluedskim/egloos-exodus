@@ -1,9 +1,24 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Egloos Exodus</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+<title>Egloos Exodus</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('#download').on('submit', function(e){
+                e.preventDefault();
+                if($('#blogName').val().length == 0) {
+                    alert('블로그 명을 입력해주세요');
+                    return;
+                } else if($('#blogBaseUrl').val().length == 0) {
+                    alert('블로그 주소를 입력해주세요');
+                    return;
+                }
+                this.submit();
+            });
+        });
+    </script>
 </head>
 <body>
 <h1>Egloos Exodus</h1>
@@ -19,7 +34,7 @@
 <span th:unless="${currentBlog != null}">
     <hr/>
     <h2>블로그 정보 입력</h2>
-    <form method="post" action="download">
+    <form id="download" method="post" action="download">
         <ul>
             <li>
                 <label for="blogName">블로그 명 : </label>

@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class WebController {
@@ -31,13 +32,16 @@ public class WebController {
     }
 
     @PostMapping("download")
-    public String download(Blog blog, Model model) throws Exception {
+    public ModelAndView download(Blog blog, Model model) throws Exception {
+        if(blog.getBlogBaseUrl().indexOf("http://") < 0) {
+            blog.setBlogBaseUrl("http://" + blog.getBlogBaseUrl());
+        }
         logger.debug("blog={}", blog);
         logger.debug("blogDownloaderManager.getCurrentBlog()={}", blogDownloaderManager.getCurrentBlog());
 
         blogDownloaderManager.downloadBlog(blog);
 
         model.addAttribute("currentBlog", blog);
-        return "index";
+        return new ModelAndView("redirect:/");
     }
 }
