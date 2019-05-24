@@ -50,6 +50,8 @@ public class EgloosBlogDownloader {
 	 * @throws Exception
 	 */
 	public boolean downLoadBlog(StaticSiteGeneratorDelegator siteGen, String blogBaseUrl) throws Exception {
+		logger.info("downloading blogBaseUrl={}", blogBaseUrl);
+
 		boolean isSuccess = false;
 		isDownloading = true;
 		this.blogName = blogName;

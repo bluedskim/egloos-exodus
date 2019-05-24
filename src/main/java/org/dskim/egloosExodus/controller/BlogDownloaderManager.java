@@ -23,7 +23,6 @@ public class BlogDownloaderManager {
     public void downloadBlog(Blog blog) throws Exception {
         hugo.init(blog.getBlogName(), "ananke");
 
-        logger.info("EXECUTING : command line runner");
         egloosBlogDownloader.downLoadBlog(hugo, blog.getBlogBaseUrl());
 
         //egloosBlogDownloader.downLoadBlog("blogName", "js61030.egloos.com"); // 실패
