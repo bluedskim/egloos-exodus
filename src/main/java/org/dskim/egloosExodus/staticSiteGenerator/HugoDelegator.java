@@ -103,7 +103,7 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	public void createPost(Post post) throws Exception {
 		post.setTitle(post.getTitle().replaceAll("/", "-"));
 		post.setTitle(post.getTitle().replaceAll("\"", "'"));
-		logger.debug("post={}", post);
+		logger.debug("post={}", post.toString());
 		String outStr = callCmd(new String[]{"hugo", "new", "posts/" +
 														  (post.getCategory() == null ? "" : post.getCategory() + "/") +
 														  post.getTitle() + ".md"

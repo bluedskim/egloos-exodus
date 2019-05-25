@@ -1,5 +1,6 @@
 package org.dskim.egloosExodus.processor;
 
+import jodd.jerry.Jerry;
 import lombok.Data;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -19,6 +20,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import static jodd.jerry.Jerry.jerry;
+
+import static org.jsoup.nodes.Document.OutputSettings.Syntax.html;
 
 @Component
 @Data
@@ -59,20 +64,37 @@ public class EgloosBlogDownloader {
 
 		String postUrl = getFirstPostUrl(blogBaseUrl);
 		Post post = null;
-		while((post = getPost(postUrl)) != null) {
+
+		do {
+			//long sleepTime = minSleepTime * 1000 * (1L + (long) (Math.random() * (3L - 1L)));
+			long sleepTime = minSleepTime * 1000 + (long)(1000 * 2 * Math.random());
+			int retryCount = 1;
+
+			do {
+				try {
+					post = getPost(postUrl);
+				} catch(Exception e) {
+					post = null;
+					logger.error("exception! retryCount={}, sleepTime={}", retryCount, sleepTime, e);
+					++retryCount;
+					Thread.sleep(sleepTime);
+				}
+			} while (post == null && retryCount <= 5);
+
 			siteGen.createPost(post);
 			postUrl = post.getPrevPostUrl();
 
-			//long sleepTime = minSleepTime * 1000 * (1L + (long) (Math.random() * (3L - 1L)));
-			long sleepTime = minSleepTime * 1000 + (long)(1000 * 2 * Math.random());
-			logger.debug("sleeping... {}", sleepTime);
+			logger.debug("sleeping... {}, postUrl={}", sleepTime, postUrl);
 			Thread.sleep(sleepTime);
-		}
+
+		} while (postUrl != null);
 
 		this.blogName = null;
 		this.blogBaseUrl = null;
 		currentBlogNo = 1;
 		isDownloading = false;
+
+		logger.debug("downLoadBlog done isSuccess={}", isSuccess);
 		return isSuccess;
 	}
 
@@ -112,6 +134,7 @@ public class EgloosBlogDownloader {
 	public Post getPost(String postUrl) throws Exception {
 		if(postUrl == null) return null;
 		Post post = new Post();
+		post.setUrl(postUrl);
 
 		Document document = Jsoup.connect(postUrl).get();
 		logger.debug("postUrl={}, document.title()={}", postUrl, document.title());
@@ -126,6 +149,7 @@ public class EgloosBlogDownloader {
 		*/
 
 		Element blogPost = document.selectFirst("div.post_view");
+		logger.debug("blogPost={}", blogPost.html());
 
 		//'신고' 삭제
 		Element 신고 = blogPost.selectFirst("span:matchesOwn(신고)");
@@ -179,8 +203,29 @@ public class EgloosBlogDownloader {
 				image.attr("src", tempImagePath);
 			}
 		}
+		logger.debug("images.size()={}", images == null ? "null" : images.size());
 
-		Element hentry = blogPost.select("div.hentry").first();
+		Element hentry = blogPost.selectFirst("div.hentry");
+		// 여기서 이런 증상 발생~!!! http://luckcrow.egloos.com/2146639
+		if(hentry == null) {
+			hentry = blogPost.clone();
+			post.setDirty(true);
+			logger.debug("dirty! url={}", post.getUrl());
+			hentry.html("<h3>EgloosExodus : Html parsing 실패!</h3>\n\n" + hentry.html());
+
+			//hentry = postTitleArea.nextElementSibling().child(0);	// 엉뚱한 놈 -.-
+
+			/* jerry도 마찬가지 -.-
+			Jerry doc = jerry(blogPost.html());
+			logger.debug("doc.$(\"div.post_title_area\").html()={}", doc.$("div.post_title_area").html());
+			logger.debug("doc.$(\"div.post_title_area\").html().siblings().first()={}", doc.$("div.post_title_area").siblings().first().html());
+
+			logger.debug("doc.$(\"div.hentry\").html()={}", doc.$("div.hentry").html());
+			hentry = new Element("div");
+			hentry.html(doc.$("div.hentry").html());
+			*/
+		}
+
 		post.setBodyText(hentry.text());
 		post.setBodyHtml(hentry.html());
 		Element comment = blogPost.select("ul.comment_list").first();

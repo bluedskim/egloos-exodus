@@ -1,6 +1,7 @@
 package org.dskim.egloosExodus.model;
 
 import lombok.Data;
+import lombok.ToString;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@ToString(exclude = "featuredImage, description, bodyText, bodyHtml, category, tags, prevPostUrl, postList")
 public class Post {
 	String id;		// 고유 아이디
 	String title;
@@ -19,10 +21,13 @@ public class Post {
 	String bodyHtml;
 	String category;
 	String tags = "";
+	String url;
 	String prevPostUrl;
 	DateTimeFormatter readFormatter = DateTimeFormat.forPattern("yyyy/MM/dd HH:mm");
 	DateTimeFormatter printFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ");
 	List<String[]> attachments;	// 첨부파일 정보 {"상대 경로", "절대 경로"}
+	// 해당 html 더러워서 파싱 불가. 그래서 파싱 가능한 최소 범위를 가져옴.
+	boolean dirty;
 
 	public String getUtcDate() {
 		return printFormatter.print(readFormatter.parseDateTime(date));
