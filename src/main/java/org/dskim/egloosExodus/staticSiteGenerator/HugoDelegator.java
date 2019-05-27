@@ -2,6 +2,8 @@ package org.dskim.egloosExodus.staticSiteGenerator;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dskim.egloosExodus.model.Post;
@@ -103,10 +105,31 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	public void createPost(Post post) throws Exception {
 		post.setTitle(post.getTitle().replaceAll("/", "-"));
 		post.setTitle(post.getTitle().replaceAll("\"", "'"));
-		logger.debug("post={}", post.toString());
+		logger.debug("post.getTitle()={}", post.getTitle());
+		String folderPath = rootDir + File.separator + baseDir + "/content/posts" + (StringUtils.isEmpty(post.getCategory()) ? "" : "/" + post.getCategory());
+		File containingFolder = new File(folderPath);
+		logger.debug("folderPath={}, exists={}", containingFolder.getAbsolutePath(), containingFolder.exists());
+
+		int postCountWithSameTilte = 0;
+		if(containingFolder.exists()) {
+			/*
+			//find ~/imsi/content -maxdepth 1 -name "*aaa*" | wc -l
+			// 동작 안함 -.-
+			//String findPostCountWithSameTilte = callCmd(new String[]{"find", folderPath, "-maxdepth", "1", "-name", "'" + post.getTitle() + "*'", "|", "wc", "-l"}, null);
+			String countCommand = "find " + folderPath + " -maxdepth 1 -name '" + post.getTitle() + "*' | wc -l";
+			logger.debug("countCommand={}", countCommand);
+			String findPostCountWithSameTilte = callCmd(new String[]{countCommand}, null);
+			logger.debug("중복된 파일명={}, postCountWithSameTilte={}", post.getTitle(), findPostCountWithSameTilte);
+			int postCountWithSameTilte = Integer.parseInt(findPostCountWithSameTilte.trim());
+			*/
+
+			postCountWithSameTilte = FileUtils.listFiles(containingFolder, new WildcardFileFilter(post.getTitle()+"*"), null).size();
+			logger.debug("postCountWithSameTilte={}", postCountWithSameTilte);
+		}
+
 		String outStr = callCmd(new String[]{"hugo", "new", "posts/" +
 														  (post.getCategory() == null ? "" : post.getCategory() + "/") +
-														  post.getTitle() + ".md"
+														  post.getTitle() + (postCountWithSameTilte > 0 ? "_" + postCountWithSameTilte : "") + ".md"
 								  , "-c"
 								  , rootDir + File.separator + baseDir + File.separator + "content"
 		}, null);

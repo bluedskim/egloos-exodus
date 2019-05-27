@@ -166,6 +166,10 @@ public class EgloosBlogDownloader {
 		post.setId(title.attr("name"));
 
 		Element category = blogPost.selectFirst("span.post_title_category");
+		if(category == null) {
+			// http://eggry.egloos.com/1572381
+			category = blogPost.selectFirst("li.post_info_category");
+		}
 		post.setCategory(category.text());
 
 		Element date = blogPost.select("abbr").first();
