@@ -162,6 +162,18 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 		logger.debug("baseDir={}", baseDir);
 		String generateStaticFlesRtn = callCmd(new String[]{"hugo", "-s", rootDir + File.separator + baseDir}, null);
 		logger.debug("generateStaticFlesRtn={}", generateStaticFlesRtn);
+		// 압축하기
+		//String zipFlesRtn = callCmd(new String[]{"zip", "-r", "\"" + rootDir + File.separator + baseDir + ".zip\"", rootDir + File.separator + baseDir}, null);
+		//String zipFlesRtn = callCmd(new String[]{"zip", "-r", rootDir + File.separator + baseDir + ".zip", rootDir + File.separator + baseDir}, null);
+		// 전체 경로로 압축 됨 -.-
+		//String zipFlesRtn = callCmd(new String[]{"zip", "-b", rootDir, "-r", baseDir + ".zip", baseDir}, null);
+		// tar -zcvf /home/bluedskim/IdeaProjects/egloosexodus/blogRootDir/하고\ 싶은\ 걸\ 하세요\ Do\ What\ You\ Want.tgz -C /home/bluedskim/IdeaProjects/egloosexodus/blogRootDir 하고\ 싶은\ 걸\ 하세요\ Do\ What\ You\ Want
+		String zipFlesRtn = callCmd(new String[]{"tar", "-zcvf", rootDir + File.separator + baseDir + ".tgz", "-C", rootDir, baseDir}, null);
+
+		logger.debug("zipFlesRtn={}", zipFlesRtn);
+		// 메일 보내기
+		logger.debug("generateStaticFlesRtn={}", generateStaticFlesRtn);
+
 		return generateStaticFlesRtn;
 	}
 

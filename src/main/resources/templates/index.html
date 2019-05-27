@@ -14,6 +14,10 @@
                 } else if($('#blogBaseUrl').val().length == 0) {
                     alert('블로그 주소를 입력해주세요');
                     return;
+                } else if($('#email').val().length == 0) {
+                    $('#email').focus();
+                    alert('이메일 주소를 입력해주세요');
+                    return;
                 }
                 this.submit();
             });
@@ -43,6 +47,10 @@
             <li>
                 <label for="blogBaseUrl">블로그 주소 : </label>
                 <input type="text" id="blogBaseUrl" name="blogBaseUrl" placeholder="ex) netyhobby.egloos.com"/>
+            </li>
+            <li>
+                <label for="blogName">이메일 : </label>
+                <input type="text" id="email" name="email" placeholder="다운로드 완료알림을 받을 이메일"/>
             </li>
         </ul>
         <input type="submit" value="다운로드"/>
