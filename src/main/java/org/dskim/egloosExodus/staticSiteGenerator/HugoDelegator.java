@@ -6,15 +6,19 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dskim.egloosExodus.model.Blog;
 import org.dskim.egloosExodus.model.Post;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;
 
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.io.*;
 import java.net.URL;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Hugo 를 이용한 정적 사이트 생성
@@ -41,17 +45,27 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	@Value(("${hugo.resourcesDir}"))
 	String hugoResourcesDir;
 
+	@Value(("${senderMailId}"))
+	String senderMailId;
+
+	@Value(("${senderMailpw}"))
+	String senderMailpw;
+
+	// 현재 다운로드 중 블로그
+	Blog blog;
+
 	/**
 	 * 블로그별로 호출해야 함
 	 *
-	 * @param blogName 블로그 명
+	 * @param blog 블로그
 	 * @param themeName 사용할 테마명
 	 * @throws Exception
 	 */
 	@Override
-	public void init(String blogName, String themeName) throws Exception {
-		logger.debug("blogName={}", blogName);
-		this.baseDir = blogName;
+	public void init(Blog blog, String themeName) throws Exception {
+		logger.debug("blogName={}", blog.getBlogName());
+		this.blog = blog;
+		this.baseDir = blog.getBlogName();
 
 		callCmd(new String[]{"rm", "-rf", rootDir + File.separator + baseDir}, null);
 		//callCmd(new String[]{"hugo", "new", "site", rootDir + File.separator + baseDir}, null);
@@ -63,7 +77,7 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 
 		// config에 테마 추가
 		Map<String, Object> obj = yaml.load(new FileReader(hugoResourcesDir + File.separator + "hugo.config.yml"));
-		obj.put("title", blogName);
+		obj.put("title", blog.getBlogName());
 		obj.put("theme", themeName);
 		yaml.dump(obj, new FileWriter(rootDir + File.separator + baseDir + File.separator + "config.yml"));
 		/*
@@ -172,7 +186,7 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 
 		logger.debug("zipFlesRtn={}", zipFlesRtn);
 		// 메일 보내기
-		logger.debug("generateStaticFlesRtn={}", generateStaticFlesRtn);
+		sendDownloadCompleteAlarm(blog, senderMailId, senderMailpw);
 
 		return generateStaticFlesRtn;
 	}
@@ -216,5 +230,44 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 		}
 
 		return outStr;
+	}
+
+	private void sendDownloadCompleteAlarm(Blog blog, String senderMailId, String senderMailpw) {
+		Properties prop = new Properties();
+		prop.put("mail.smtp.host", "smtp.gmail.com");
+		prop.put("mail.smtp.port", "587");
+		prop.put("mail.smtp.auth", "true");
+		prop.put("mail.smtp.starttls.enable", "true"); //TLS
+
+		Session session = Session.getInstance(prop,
+				new javax.mail.Authenticator() {
+					protected PasswordAuthentication getPasswordAuthentication() {
+						return new PasswordAuthentication(senderMailId, senderMailpw);
+					}
+				});
+
+		try {
+
+			Message message = new MimeMessage(session);
+			message.setFrom(new InternetAddress(senderMailId + "@gmail.com"));
+			message.setRecipients(
+					Message.RecipientType.TO,
+					InternetAddress.parse(blog.getEmail())
+			);
+			message.setSubject("Egloos Exodus : [" + blog.getBlogName() + "] 다운로드 완료");
+			message.setContent("[" + blog.getBlogName() + "] 다운로드가 완료되었습니다 !!! 24시간 후 자동 삭제됩니다 !!!<br/>"
+					+ "* 미리보기 : <a href=\"http://samba.iptime.org/ee/" + blog.getBlogName() + "/public\">http://samba.iptime.org/ee/" + blog.getBlogName() + "/public</a><br/>"
+					+ "* 다운로드 : <a href=\"http://samba.iptime.org/ee/" + blog.getBlogName() + ".tgz\">http://samba.iptime.org/ee/" + blog.getBlogName() + ".tgz</a><br/>"
+					+ "<hr/>"
+					+ "<a href=\"http://samba.iptime.org:8081/ee\">Egloos Exodus http://samba.iptime.org:8081/ee</a>"
+					, "text/html; charset=utf-8");
+
+			Transport.send(message);
+
+			logger.debug("메일 발송 완료");
+
+		} catch (MessagingException e) {
+			logger.error("메일 발송 실패!!! ", e);
+		}
 	}
 }

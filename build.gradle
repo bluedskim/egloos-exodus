@@ -41,8 +41,9 @@ dependencies {
 
     compile group: 'org.jsoup', name: 'jsoup', version: '1.11.3'
     //compile group: 'org.jodd', name: 'jodd-core', version: '5.0.13'
-    // https://mvnrepository.com/artifact/org.jodd/jodd-lagarto
     compile group: 'org.jodd', name: 'jodd-lagarto', version: '5.0.13'
+    //compile 'com.google.apis:google-api-services-gmail:v1-rev103-1.25.0'
+    compile group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
 
     compile group: 'joda-time', name: 'joda-time', version: '2.10.2'
     compile group: 'net.minidev', name: 'json-smart', version: '2.3'

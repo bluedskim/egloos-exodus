@@ -14,6 +14,6 @@ public class HugoDelegatorTest {
 
 	@Test
 	public void initTest() throws Exception {
-		hugoDelegator.init("test", "블로그명", "ananke");
+		hugoDelegator.init("test", "블로그명");
 	}
 }

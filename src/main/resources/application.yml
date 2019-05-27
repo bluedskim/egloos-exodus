@@ -24,6 +24,9 @@ blog:
   # 잘못하면 DDOS공격으로 오인 받을 수 있으므로 적당히 쉰다. (초)
   minSleepTime: 1
 
+senderMailId: egloos.exodus
+senderMailpw: ?#H1xkUc6V
+
 ---
 
 spring:

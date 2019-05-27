@@ -26,7 +26,7 @@ public class BlogDownloaderManager {
     @Async("threadPoolTaskExecutor")
     public void downloadBlog(Blog blog) throws Exception {
         this.currentBlog = blog;
-        hugo.init(blog.getBlogName(), "ananke");
+        hugo.init(blog, "ananke");
 
         try {
             egloosBlogDownloader.downLoadBlog(hugo, blog.getBlogBaseUrl());
