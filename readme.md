@@ -27,7 +27,7 @@ Spring Integration 으로 posting Lister, html downloader, html-to-markdown tran
 * ~~중복된 블로그 제목의 경우 오류 발생~~
 * ~~다운로드 완료시 압축파일 만들기~~
 * ~~다운로드 완료시 이메일 발송(나에게도 발송)~~
-* 제목에 역슬래시 있는 경우 hugo 생성시 오류 발생 http://nemonein.egloos.com/5317996
+* ~~제목에 역슬래시 있는 경우 hugo 생성시 오류 발생 http://nemonein.egloos.com/5317996~~
 * static 생성 오류 시 메일 보내고 작업 초기화
 * 대기열 제공
 ----------------------------

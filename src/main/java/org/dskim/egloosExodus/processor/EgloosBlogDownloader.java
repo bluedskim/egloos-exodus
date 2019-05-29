@@ -304,7 +304,7 @@ public class EgloosBlogDownloader {
 				post.setId(title.attr("name"));
 
 				Element category = blogPost.selectFirst("span.post_title_category");
-				post.setCategory(category.text());
+				post.setCategory(category.text().replace("/", "-"));	// 카테고리명에 path 문자있으면 - 로 변경해준다.
 
 				Element date = blogPost.select("abbr").first();
 				logger.debug("date={}", date.text());

@@ -20,6 +20,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.*;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -148,9 +149,8 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	 */
 	@Override
 	public void createPost(Post post) throws Exception {
-		post.setTitle(post.getTitle().replaceAll("/", "-"));
-		post.setTitle(post.getTitle().replaceAll("\"", "'"));
-		logger.debug("post.getTitle()={}", post.getTitle());
+		String postFileName = post.getTitle().replace("/", "-");
+		logger.debug("postFileName={}", postFileName);
 		String folderPath = rootDir + File.separator + baseDir + "/content/posts" + (StringUtils.isEmpty(post.getCategory()) ? "" : "/" + post.getCategory());
 		File containingFolder = new File(folderPath);
 		logger.debug("folderPath={}, exists={}", containingFolder.getAbsolutePath(), containingFolder.exists());
@@ -168,19 +168,19 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 			int postCountWithSameTilte = Integer.parseInt(findPostCountWithSameTilte.trim());
 			*/
 
-			postCountWithSameTilte = FileUtils.listFiles(containingFolder, new WildcardFileFilter(post.getTitle()+"*"), null).size();
+			postCountWithSameTilte = FileUtils.listFiles(containingFolder, new WildcardFileFilter(postFileName+"*"), null).size();
 			logger.debug("postCountWithSameTilte={}", postCountWithSameTilte);
 		}
 
 		String outStr = callCmd(new String[]{"hugo", "new", "posts/" +
 														  (post.getCategory() == null ? "" : post.getCategory() + "/") +
-														  post.getTitle() + (postCountWithSameTilte > 0 ? "_" + postCountWithSameTilte : "") + ".md"
+															postFileName + (postCountWithSameTilte > 0 ? "_" + postCountWithSameTilte : "") + ".md"
 								  , "-c"
 								  , rootDir + File.separator + baseDir + File.separator + "content"
 		}, null);
 		outStr = outStr.replaceAll("created", "");
 		outStr = outStr.trim();
-		String tempPostTemplate = postTemplate.replace("{title}", post.getTitle());
+		String tempPostTemplate = postTemplate.replace("{title}", post.getTitle().replace("\\", "\\\\"));
 		tempPostTemplate = tempPostTemplate.replace("{categories}", "\"" + post.getCategory() + "\"");
 		tempPostTemplate = tempPostTemplate.replace("{date}", post.getUtcDate());
 		tempPostTemplate = tempPostTemplate.replace("{tags}", post.getTags());
@@ -215,7 +215,10 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 		// 전체 경로로 압축 됨 -.-
 		//String zipFlesRtn = callCmd(new String[]{"zip", "-b", rootDir, "-r", baseDir + ".zip", baseDir}, null);
 		// tar -zcvf /home/bluedskim/IdeaProjects/egloosexodus/blogRootDir/하고\ 싶은\ 걸\ 하세요\ Do\ What\ You\ Want.tgz -C /home/bluedskim/IdeaProjects/egloosexodus/blogRootDir 하고\ 싶은\ 걸\ 하세요\ Do\ What\ You\ Want
-		String zipFlesRtn = callCmd(new String[]{"tar", "-zcvf", rootDir + File.separator + baseDir + ".tgz", "-C", rootDir, baseDir}, null);
+
+		String[] zipCommand = new String[]{"tar", "-zcvf", rootDir + File.separator + baseDir + ".tgz", "-C", rootDir, baseDir};
+		logger.debug("zipCommand={}", String.join(" ", zipCommand));
+		String zipFlesRtn = callCmd(zipCommand, null);
 
 		logger.debug("zipFlesRtn={}", zipFlesRtn);
 		// 메일 보내기
