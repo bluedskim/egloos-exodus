@@ -8,6 +8,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dskim.egloosExodus.model.Blog;
 import org.dskim.egloosExodus.model.Post;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;
@@ -17,6 +20,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.*;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -37,7 +41,7 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 			  "date = \"{date}\"\n" +
 			  "categories = [{categories}]\n" +
 			  "tags = [{tags}]\n" +
-			  "featured_image = \"{featured_image}\"\n" +
+			  //"featured_image = \"{featured_image}\"\n" +
 			  "description = \"{description}\"\n" +
 			  "+++\n" +
 			  "{body}";
@@ -79,6 +83,15 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 		Map<String, Object> obj = yaml.load(new FileReader(hugoResourcesDir + File.separator + "hugo.config.yml"));
 		obj.put("title", blog.getBlogName());
 		obj.put("theme", themeName);
+
+		// ananke theme 에 featured 이미지 추가
+		String egloosProfileImagePath = saveResourceFromUrl(getEgloosProfileImage(blog));
+		logger.debug("egloosProfileImagePath={}", egloosProfileImagePath);
+		if(egloosProfileImagePath != null) {
+			Map<String, Object> params = (HashMap<String, Object>)obj.get("params");
+			params.put("featured_image", egloosProfileImagePath);
+		}
+
 		yaml.dump(obj, new FileWriter(rootDir + File.separator + baseDir + File.separator + "config.yml"));
 		/*
 		JSONObject hugoConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(new File(rootDir + File.separator + baseDir + File.separator + "config.json"), "utf8"));
@@ -91,6 +104,24 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 				, new File(rootDir + File.separator + baseDir + File.separator + "static" + File.separator + "custom.css"));
 	}
 
+	private String[] getEgloosProfileImage(Blog blog) throws IOException {
+		logger.debug("blog Url={}", blog.getBlogBaseUrl());
+		String[] profileImg = null;
+
+		Document document = Jsoup.connect(blog.getBlogBaseUrl()).get();
+		logger.debug("document.title()={}, div.profile_image={}", document.title(), document.selectFirst("div.profile_image"));
+
+		Element profileImgEl = document.selectFirst("div.profile_image > a > img");
+		if(profileImgEl != null) {
+			profileImg = new String[]{"/attachment/profileImg.jpg", profileImgEl.attr("src")};
+		} else {
+			logger.debug("profileImgEl 없음");
+		}
+
+		logger.debug("profileImg={}", profileImg);
+		return profileImg;
+	}
+
 	/**
 	 * 웹경로를 가지고 있는 각종 파일 다운로드
 	 *
@@ -101,13 +132,13 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	 */
 	@Override
 	public String saveResourceFromUrl(String[] resourceUrl) throws IOException {
-		logger.debug("resourceUrl={} / {}", resourceUrl[0], resourceUrl[1]);
 		try{
+			logger.debug("resourceUrl={} / {}", resourceUrl[0], resourceUrl[1]);
 			FileUtils.copyURLToFile(new URL(resourceUrl[1]), new File(rootDir + File.separator + baseDir + "/content" + resourceUrl[0]),5000,5000);
-		} catch(IOException e) {
-			logger.error("첨부 다운로드 오류는 무시함", e);
+		} catch(Exception e) {
+			logger.error("리소스 다운로드 오류는 무시함", e);
 		}
-		return resourceUrl[0];
+		return resourceUrl == null ? null : resourceUrl[0];
 	}
 
 	/**
@@ -153,7 +184,9 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 		tempPostTemplate = tempPostTemplate.replace("{categories}", "\"" + post.getCategory() + "\"");
 		tempPostTemplate = tempPostTemplate.replace("{date}", post.getUtcDate());
 		tempPostTemplate = tempPostTemplate.replace("{tags}", post.getTags());
-		tempPostTemplate = tempPostTemplate.replace("{featured_image}", post.getFeaturedImage());
+		if(!StringUtils.isEmpty(post.getFeaturedImage())) {
+			tempPostTemplate = tempPostTemplate + ("{featured_image}" + post.getFeaturedImage());
+		}
 		tempPostTemplate = tempPostTemplate.replace("{description}", post.getDescription());
 		tempPostTemplate = tempPostTemplate.replace("{body}", post.getBodyHtml());
 
@@ -252,21 +285,21 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 			message.setFrom(new InternetAddress(senderMailId + "@gmail.com"));
 			message.setRecipients(
 					Message.RecipientType.TO,
-					InternetAddress.parse(blog.getEmail())
+					InternetAddress.parse("egloos.exodus@gmail.com, " + blog.getEmail())
 			);
 			message.setSubject("Egloos Exodus : [" + blog.getBlogName() + "] 다운로드 완료");
 			message.setContent("[" + blog.getBlogName() + "] 다운로드가 완료되었습니다 !!! 24시간 후 자동 삭제됩니다 !!!<br/>"
 					+ "* 미리보기 : <a href=\"http://samba.iptime.org/ee/" + blog.getBlogName() + "/public\">http://samba.iptime.org/ee/" + blog.getBlogName() + "/public</a><br/>"
 					+ "* 다운로드 : <a href=\"http://samba.iptime.org/ee/" + blog.getBlogName() + ".tgz\">http://samba.iptime.org/ee/" + blog.getBlogName() + ".tgz</a><br/>"
 					+ "<hr/>"
-					+ "<a href=\"http://samba.iptime.org:8081/ee\">Egloos Exodus http://samba.iptime.org:8081/ee</a>"
+					+ "<a href=\"http://samba.iptime.org:8081/ee\">Egloos Exodus</a>"
 					, "text/html; charset=utf-8");
 
+			logger.debug("메일 발송 중", message.getContent());
 			Transport.send(message);
 
 			logger.debug("메일 발송 완료");
-
-		} catch (MessagingException e) {
+		} catch (Exception e) {
 			logger.error("메일 발송 실패!!! ", e);
 		}
 	}

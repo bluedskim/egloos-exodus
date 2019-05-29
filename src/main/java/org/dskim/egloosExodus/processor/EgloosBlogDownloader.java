@@ -1,13 +1,12 @@
 package org.dskim.egloosExodus.processor;
 
-import jodd.jerry.Jerry;
 import lombok.Data;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dskim.egloosExodus.staticSiteGenerator.StaticSiteGeneratorDelegator;
 import org.dskim.egloosExodus.model.Post;
+import org.dskim.egloosExodus.staticSiteGenerator.StaticSiteGeneratorDelegator;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -20,10 +19,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import static jodd.jerry.Jerry.jerry;
-
-import static org.jsoup.nodes.Document.OutputSettings.Syntax.html;
 
 @Component
 @Data

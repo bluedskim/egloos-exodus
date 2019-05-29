@@ -1,6 +1,5 @@
 package org.dskim.egloosExodus.conf;
 
-import org.dskim.egloosExodus.staticSiteGenerator.HugoDelegator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;

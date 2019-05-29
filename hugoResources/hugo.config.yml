@@ -110,3 +110,4 @@ taxonomies:
   tag:                    "tags"
 params:
   custom_css: [custom.css]
+  featured_image:
