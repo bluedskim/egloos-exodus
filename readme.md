@@ -12,7 +12,7 @@ Spring Integration 으로 posting Lister, html downloader, html-to-markdown tran
 * 그 외에 삽입된 파일들은 저장하지 않음(서버 용량 문제)
 * 블로그 본문의 html 태그들을 그대로 사용함(그래서 폰트가 안예쁘게 보일 수 있음)
 * 다운 받은 html을 이용해 Hugo 로 블로그를 생성함.
-* 한번에 하나의 블로그만 다운로드 함(가령 aaa.egloos.com이 처리중이라면 bbb.egloos.com을 동시에 처리할 수 없음)
+* 한번에 하나의 블로그만 다운로드 함(가령 aaa.egloos.com이 처리중이라면 bbb.egloos.com을 동시에 처리하지 않음)
 
 <해야 할 작업>
 * ~~설정파일을 yaml로 변경~~
@@ -28,14 +28,16 @@ Spring Integration 으로 posting Lister, html downloader, html-to-markdown tran
 * ~~다운로드 완료시 압축파일 만들기~~
 * ~~다운로드 완료시 이메일 발송(나에게도 발송)~~
 * ~~제목에 역슬래시 있는 경우 hugo 생성시 오류 발생 http://nemonein.egloos.com/5317996~~
+* ~~tag링크 오류~~
 * static 생성 오류 시 메일 보내고 작업 초기화
-* 대기열 제공
-----------------------------
+* 대기열 제공(json 파일로 저장하고 서버 재기동시 자동으로 resume
 * 24시간이 지난 블로그 자동 삭제
+* 통계(현재까지 다운로드한 블로그 리스트, 총 블로그 개수, 총 용량 ...)
+----------------------------
+* 카테고리 목록
 * live reload
 * 미리보기
 * 테마선택
 * 제대로 로깅하기
 ** 불필요한 로깅 없애기 (html태그)
-* 통계(현재까지 다운로드한 블로그 리스트, 총 블로그 개수, 총 용량 ...)
 * 화면 리프레시 없이 정보변경가능하도록 web socket 사용
