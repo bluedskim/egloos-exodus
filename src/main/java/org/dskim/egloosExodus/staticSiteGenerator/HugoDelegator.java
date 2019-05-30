@@ -149,8 +149,11 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	 */
 	@Override
 	public void createPost(Post post) throws Exception {
-		String postFileName = post.getTitle().replace("/", "-");
+		// 파일명에 / 는 - 로 변경, " 는 없앰
+		String postFileName = post.getTitle().replace("/", "-").replace("\"", "");
 		logger.debug("postFileName={}", postFileName);
+		// 카테고리명에 / 를 - 로 변경
+		post.setCategory(post.getCategory().replace("/", "-"));
 		String folderPath = rootDir + File.separator + baseDir + "/content/posts" + (StringUtils.isEmpty(post.getCategory()) ? "" : "/" + post.getCategory());
 		File containingFolder = new File(folderPath);
 		logger.debug("folderPath={}, exists={}", containingFolder.getAbsolutePath(), containingFolder.exists());
@@ -180,7 +183,8 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 		}, null);
 		outStr = outStr.replaceAll("created", "");
 		outStr = outStr.trim();
-		String tempPostTemplate = postTemplate.replace("{title}", post.getTitle().replace("\\", "\\\\"));
+		// 제목에 "와 역슬래시 escape,
+		String tempPostTemplate = postTemplate.replace("{title}", post.getTitle().replace("\\", "\\\\").replace("\"", "\\\""));
 		tempPostTemplate = tempPostTemplate.replace("{categories}", "\"" + post.getCategory() + "\"");
 		tempPostTemplate = tempPostTemplate.replace("{date}", post.getUtcDate());
 		tempPostTemplate = tempPostTemplate.replace("{tags}", post.getTags());
@@ -216,7 +220,7 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 		//String zipFlesRtn = callCmd(new String[]{"zip", "-b", rootDir, "-r", baseDir + ".zip", baseDir}, null);
 		// tar -zcvf /home/bluedskim/IdeaProjects/egloosexodus/blogRootDir/하고\ 싶은\ 걸\ 하세요\ Do\ What\ You\ Want.tgz -C /home/bluedskim/IdeaProjects/egloosexodus/blogRootDir 하고\ 싶은\ 걸\ 하세요\ Do\ What\ You\ Want
 
-		String[] zipCommand = new String[]{"tar", "-zcvf", rootDir + File.separator + baseDir + ".tgz", "-C", rootDir, baseDir};
+		String[] zipCommand = new String[]{"tar", "-zcf", rootDir + File.separator + baseDir + ".tgz", "-C", rootDir, baseDir};
 		logger.debug("zipCommand={}", String.join(" ", zipCommand));
 		String zipFlesRtn = callCmd(zipCommand, null);
 

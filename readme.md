@@ -29,11 +29,14 @@ Spring Integration 으로 posting Lister, html downloader, html-to-markdown tran
 * ~~다운로드 완료시 이메일 발송(나에게도 발송)~~
 * ~~제목에 역슬래시 있는 경우 hugo 생성시 오류 발생 http://nemonein.egloos.com/5317996~~
 * ~~tag링크 오류~~
+* 시스템 프로세스로 tgz압축하는 경우 파일이 너무 많으면 실패?
+* title에 " 없애기('로 변경)
 * static 생성 오류 시 메일 보내고 작업 초기화
 * 대기열 제공(json 파일로 저장하고 서버 재기동시 자동으로 resume
 * 24시간이 지난 블로그 자동 삭제
 * 통계(현재까지 다운로드한 블로그 리스트, 총 블로그 개수, 총 용량 ...)
 ----------------------------
+* 블로그 소유자만 다운로드 받을 수 있도록
 * 카테고리 목록
 * live reload
 * 미리보기
