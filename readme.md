@@ -33,9 +33,9 @@ Spring Integration 으로 posting Lister, html downloader, html-to-markdown tran
 * ~~tag링크 오류~~
 * ~~시스템 프로세스로 tgz압축하는 경우 파일이 너무 많으면 실패?~~
 * ~~title에 " 없애기('로 변경)~~
-* 파일명과 카테고리명에 # 없애기
-* 블로그 base folder 명을 toplevel domain으로 통일함
-* 블로그명을 입력받지 않고 html title 로 함
+* ~~파일명과 카테고리명에 # 없애기~~
+* ~~블로그 base folder 명을 toplevel domain으로 통일함~~
+* ~~블로그명을 입력받지 않고 html title 로 함~~
 
 * 하위 페이지에서 featured image경로 오류 http://samba.iptime.org/ee/A%20Citizen%20of%20(no)%20obscure%20city/public/posts/page/2.html
 * static 생성 오류 시 메일 보내고 작업 초기화
