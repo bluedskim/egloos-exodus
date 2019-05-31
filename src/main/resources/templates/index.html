@@ -4,25 +4,28 @@
 <title>Egloos Exodus</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
-    <script>
-        $(document).ready(function(){
-            $('#download').on('submit', function(e){
-                e.preventDefault();
-                if($('#blogName').val().length == 0) {
-                    alert('블로그 명을 입력해주세요');
-                    return;
-                } else if($('#blogBaseUrl').val().length == 0) {
-                    alert('블로그 주소를 입력해주세요');
-                    return;
-                } else if($('#email').val().length == 0) {
-                    $('#email').focus();
-                    alert('이메일 주소를 입력해주세요');
-                    return;
-                }
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/additional-methods.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#download').on('submit', function(e){
+            e.preventDefault();
+            if($('#blogBaseUrl').val().length == 0) {
+                $('#blogBaseUrl').focus();
+                alert('블로그 주소를 입력해주세요');
+                return;
+            } else if($('#email').val().length == 0) {
+                $('#email').focus();
+                alert('이메일 주소를 입력해주세요');
+                return;
+            }
+            if(confirm('해당 블로그를 다운로드 하시겠습니까?')) {
                 this.submit();
-            });
+            }
         });
-    </script>
+
+        $('#blogBaseUrl').focus();
+    });
+</script>
 </head>
 <body>
 <h1>Egloos Exodus</h1>
@@ -33,27 +36,28 @@
 </ol>
 
 <span th:if="${currentBlog != null}">
-    <p th:text="'현재 ' + ${currentBlog.blogName} + '을(를) 다운로드 중입니다.'" />
+    <p th:text="'현재 ' + ${currentBlog.blogBaseUrl} + '을(를) 다운로드 중입니다.'" />
 </span>
 <span th:unless="${currentBlog != null}">
     <hr/>
     <h2>블로그 정보 입력</h2>
     <form id="download" method="post" action="download">
-        <ul>
+        <ul><!--
             <li>
                 <label for="blogName">블로그 명 : </label>
                 <input type="text" id="blogName" name="blogName" placeholder="ex) 라이트노벨 레이블 노블엔진"/>
             </li>
+            -->
             <li>
                 <label for="blogBaseUrl">블로그 주소 : </label>
-                <input type="text" id="blogBaseUrl" name="blogBaseUrl" placeholder="ex) netyhobby.egloos.com"/>
+                <input type="text" id="blogBaseUrl" name="blogBaseUrl" placeholder="ex) http://netyhobby.egloos.com"/>
             </li>
             <li>
-                <label for="blogName">이메일 : </label>
+                <label for="email">이메일 : </label>
                 <input type="text" id="email" name="email" placeholder="다운로드 완료알림을 받을 이메일"/>
             </li>
         </ul>
-        <input type="submit" value="다운로드"/>
+        <input type="submit" value="시작"/>
     </form>
 </span>
 </body>

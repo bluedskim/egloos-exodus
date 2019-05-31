@@ -70,7 +70,7 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	public void init(Blog blog, String themeName) throws Exception {
 		logger.debug("blogName={}", blog.getBlogName());
 		this.blog = blog;
-		this.baseDir = blog.getBlogName();
+		this.baseDir = StringUtils.substringBetween(blog.getBlogBaseUrl(), "://", ".");
 
 		callCmd(new String[]{"rm", "-rf", rootDir + File.separator + baseDir}, null);
 		//callCmd(new String[]{"hugo", "new", "site", rootDir + File.separator + baseDir}, null);
@@ -82,7 +82,6 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 
 		// config에 테마 추가
 		Map<String, Object> obj = yaml.load(new FileReader(hugoResourcesDir + File.separator + "hugo.config.yml"));
-		obj.put("title", blog.getBlogName());
 		obj.put("theme", themeName);
 
 		// ananke theme 에 featured 이미지 추가
@@ -93,6 +92,7 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 			params.put("featured_image", egloosProfileImagePath);
 		}
 
+		obj.put("title", blog.getBlogName());
 		yaml.dump(obj, new FileWriter(rootDir + File.separator + baseDir + File.separator + "config.yml"));
 		/*
 		JSONObject hugoConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(new File(rootDir + File.separator + baseDir + File.separator + "config.json"), "utf8"));
@@ -111,6 +111,8 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 
 		Document document = Jsoup.connect(blog.getBlogBaseUrl()).get();
 		logger.debug("document.title()={}, div.profile_image={}", document.title(), document.selectFirst("div.profile_image"));
+
+		blog.setBlogName(document.title());
 
 		Element profileImgEl = document.selectFirst("div.profile_image > a > img");
 		if(profileImgEl != null) {
@@ -149,12 +151,18 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	 */
 	@Override
 	public void createPost(Post post) throws Exception {
-		// 파일명에 / 는 - 로 변경, " 는 없앰
-		String postFileName = post.getTitle().replace("/", "-").replace("\"", "");
+		// 파일명에 / 는 _ 로 변경, " 는 없앰
+		String postFileName = post.getTitle().replace("/", "_")
+				.replace("\"", "")
+				.replace("#", ".")
+				;
 		logger.debug("postFileName={}", postFileName);
-		// 카테고리명에 / 를 - 로 변경
-		post.setCategory(post.getCategory().replace("/", "-"));
-		String folderPath = rootDir + File.separator + baseDir + "/content/posts" + (StringUtils.isEmpty(post.getCategory()) ? "" : "/" + post.getCategory());
+		// 카테고리명에 / 를 _ 로 변경
+		post.setCategory(post.getCategory().replace("/", "_")
+											.replace("#", "_"));
+		String categoryFolderName = post.getCategory();
+
+		String folderPath = rootDir + File.separator + baseDir + "/content/posts" + (StringUtils.isEmpty(categoryFolderName) ? "" : "/" + categoryFolderName);
 		File containingFolder = new File(folderPath);
 		logger.debug("folderPath={}, exists={}", containingFolder.getAbsolutePath(), containingFolder.exists());
 
@@ -176,7 +184,7 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 		}
 
 		String outStr = callCmd(new String[]{"hugo", "new", "posts/" +
-														  (post.getCategory() == null ? "" : post.getCategory() + "/") +
+														  (categoryFolderName == null ? "" : categoryFolderName + "/") +
 															postFileName + (postCountWithSameTilte > 0 ? "_" + postCountWithSameTilte : "") + ".md"
 								  , "-c"
 								  , rootDir + File.separator + baseDir + File.separator + "content"
