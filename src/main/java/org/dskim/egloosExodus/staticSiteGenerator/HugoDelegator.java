@@ -8,6 +8,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dskim.egloosExodus.model.Blog;
 import org.dskim.egloosExodus.model.Post;
+import org.joda.time.DateTime;
+import org.joda.time.Period;
+import org.joda.time.PeriodType;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -70,7 +76,8 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	public void init(Blog blog, String themeName) throws Exception {
 		logger.debug("blogName={}", blog.getBlogName());
 		this.blog = blog;
-		this.baseDir = StringUtils.substringBetween(blog.getBlogBaseUrl(), "://", ".");
+		blog.setUserId(StringUtils.substringBetween(blog.getBlogBaseUrl(), "://", "."));
+		this.baseDir = blog.getUserId();
 
 		callCmd(new String[]{"rm", "-rf", rootDir + File.separator + baseDir}, null);
 		//callCmd(new String[]{"hugo", "new", "site", rootDir + File.separator + baseDir}, null);
@@ -151,6 +158,8 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	 */
 	@Override
 	public void createPost(Post post) throws Exception {
+		blog.setCurrentPost(post);
+		blog.setCurrentPostNumber(blog.getCurrentPostNumber()+1);
 		// 파일명에 / 는 _ 로 변경, " 는 없앰
 		String postFileName = post.getTitle().replace("/", "_")
 				.replace("\"", "")
@@ -303,12 +312,25 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 					InternetAddress.parse("egloos.exodus@gmail.com, " + blog.getEmail())
 			);
 			message.setSubject("Egloos Exodus : [" + blog.getBlogName() + "] 다운로드 완료");
-			message.setContent("[" + blog.getBlogName() + "] 다운로드가 완료되었습니다 !!! 24시간 후 자동 삭제됩니다 !!!<br/>"
-					+ "* 미리보기 : <a href=\"http://samba.iptime.org/ee/" + blog.getBlogName() + "/public\">http://samba.iptime.org/ee/" + blog.getBlogName() + "/public</a><br/>"
-					+ "* 다운로드 : <a href=\"http://samba.iptime.org/ee/" + blog.getBlogName() + ".tgz\">http://samba.iptime.org/ee/" + blog.getBlogName() + ".tgz</a><br/>"
+
+			PeriodFormatter hhmm = new PeriodFormatterBuilder()
+					.printZeroAlways()
+					.minimumPrintedDigits(2) // gives the '01'
+					.appendHours()
+					.appendSeparator("시간")
+					.appendMinutes()
+					.appendSuffix("분")
+					.toFormatter();
+			String mailContent = "[" + blog.getBlogName() + "] 다운로드가 완료되었습니다 !!! " + DateTimeFormat.forPattern("yyyy-MM-dd HH:mm").print(new DateTime().plusDays(1)) + "에 자동 삭제됩니다 !!!<br/>"
+					+ "* 소요 시간(분) : " + new Period(new DateTime(), blog.getDownloadStartDate(), PeriodType.minutes()).toString(hhmm) + "<br/>"
+					+ "* 다운로드 글개수 : " + blog.getCurrentPostNumber() + "<br/>"
+					+ "* 미리 보기 : <a href=\"http://samba.iptime.org/ee/" + blog.getUserId() + "/public\">http://samba.iptime.org/ee/" + blog.getUserId() + "/public</a><br/>"
+					+ "* 다운로드 : <a href=\"http://samba.iptime.org/ee/" + blog.getUserId() + ".tgz\">http://samba.iptime.org/ee/" + blog.getUserId() + ".tgz</a><br/>"
 					+ "<hr/>"
-					+ "<a href=\"http://samba.iptime.org:8081/ee\">Egloos Exodus</a>"
-					, "text/html; charset=utf-8");
+					+ "<a href=\"http://samba.iptime.org:8081/ee\">Egloos Exodus</a>";
+			logger.debug("메일 본문:\n{}", mailContent);
+
+			message.setContent(mailContent, "text/html; charset=utf-8");
 
 			logger.debug("메일 발송 중", message.getContent());
 			Transport.send(message);

@@ -36,7 +36,7 @@ Spring Integration 으로 posting Lister, html downloader, html-to-markdown tran
 * ~~파일명과 카테고리명에 # 없애기~~
 * ~~블로그 base folder 명을 toplevel domain으로 통일함~~
 * ~~블로그명을 입력받지 않고 html title 로 함~~
-* 완료 이메일의 링크 변경
+* ~~완료 이메일의 링크 변경~~
 
 * 저장 공간 문제(하나의 블로그가 10G?)
 * 하위 페이지에서 featured image경로 오류 http://samba.iptime.org/ee/A%20Citizen%20of%20(no)%20obscure%20city/public/posts/page/2.html

@@ -2,5 +2,9 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/blogRootDir/반달가면/themes/hugo-theme-bootstrap4-blog" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/blogRootDir/반달가면/themes/inkblotty" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/blogRootDir/반달가면/themes/jeffprod" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/blogRootDir/플로렌스의 네티하비 블로그/themes/hugo-theme-bootstrap4-blog" vcs="Git" />
   </component>
 </project>

@@ -36,7 +36,14 @@
 </ol>
 
 <span th:if="${currentBlog != null}">
-    <p th:text="'현재 ' + ${currentBlog.blogBaseUrl} + '을(를) 다운로드 중입니다.'" />
+    <span th:if="${currentBlog.currentPost == null}">
+        <a th:href="${currentBlog.blogBaseUrl}" th:text="'현재 ' + ${currentBlog.blogBaseUrl} + ' 을(를) 다운로드 중입니다.'">
+        </a>
+    </span>
+    <span th:unless="${currentBlog.currentPost == null}">
+        <a th:href="${currentBlog.currentPost.url}" th:text="'현재 ' + ${currentBlog.blogBaseUrl} + ' 의 ' + ${currentBlog.currentPostNumber} + '번째 글 ' + ${currentBlog.currentPost.title} +'(' + ${currentBlog.currentPost.date} + ') 을(를) 다운로드 중입니다.'">
+        </a>
+    </span>
 </span>
 <span th:unless="${currentBlog != null}">
     <hr/>
