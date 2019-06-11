@@ -40,7 +40,7 @@ Spring Integration 으로 posting Lister, html downloader, html-to-markdown tran
 * ~~24시간이 지난 블로그 자동 삭제~~
 * ~~내 블로그 합쳐서 생성해보기~~
 * 대기열 제공(대기열을 저장하고 서버 재기동시 자동으로 resume
-* 통계(현재까지 다운로드한 블로그 리스트, 총 블로그 개수, 총 용량 ...) JsonDB
+* 통계(현재까지 다운로드한 블로그 리스트, 총 블로그 개수, 총 용량 ...)
 
 * 저장 공간 문제(하나의 블로그가 10G?)
 * static 생성 오류 시 메일 보내고 작업 초기화

@@ -38,11 +38,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-integration', version: '2.1.3.RELEASE'// https://mvnrepository.com/artifact/commons-io/commons-io
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version: '2.1.5.RELEASE'
-    compile ('org.mambofish:spring-data-jsondb:1.0-SNAPSHOT') {
-        exclude group: 'org.apache.logging.log4j'
-        exclude group: 'org.springframework.data'
-    }
-    //compile group: 'org.mambofish', name: 'spring-data-jsondb', version: '1.0-SNAPSHOT'
     compile group: 'org.springframework.data', name: 'spring-data-jpa', version: '2.1.8.RELEASE'
 
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
