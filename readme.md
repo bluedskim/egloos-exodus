@@ -37,18 +37,20 @@ Spring Integration 으로 posting Lister, html downloader, html-to-markdown tran
 * ~~블로그 base folder 명을 toplevel domain으로 통일함~~
 * ~~블로그명을 입력받지 않고 html title 로 함~~
 * ~~완료 이메일의 링크 변경~~
+* ~~24시간이 지난 블로그 자동 삭제~~
+* ~~내 블로그 합쳐서 생성해보기~~
+* 대기열 제공(대기열을 저장하고 서버 재기동시 자동으로 resume
+* 통계(현재까지 다운로드한 블로그 리스트, 총 블로그 개수, 총 용량 ...) JsonDB
 
 * 저장 공간 문제(하나의 블로그가 10G?)
-* 하위 페이지에서 featured image경로 오류 http://samba.iptime.org/ee/A%20Citizen%20of%20(no)%20obscure%20city/public/posts/page/2.html
 * static 생성 오류 시 메일 보내고 작업 초기화
-* 대기열 제공(jsonDB 파일로 저장하고 서버 재기동시 자동으로 resume
-* 통계(현재까지 다운로드한 블로그 리스트, 총 블로그 개수, 총 용량 ...) JsonDB
 * theme : ugly url 기반일 때 category.html, tags.html 의 taxanomy에 링크 오류
+* 하위 페이지에서 featured image경로 오류 http://samba.iptime.org/ee/A%20Citizen%20of%20(no)%20obscure%20city/public/posts/page/2.html
 * posting별 featured_image적용 하기. 아마도 theme쪽에서 변경해야 할 듯
 * 원본에 비해 폰트가 너무 큼
-* 24시간이 지난 블로그 자동 삭제
 ----------------------------
 * 블로그 소유자만 다운로드 받을 수 있도록
+* 모바일 사이트에서 다운로드 받는게 더 낫지 않나?
 * 카테고리 목록
 * live reload
 * 미리보기

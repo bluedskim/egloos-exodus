@@ -30,13 +30,15 @@ public class EgloosPostListReaderDemo implements CommandLineRunner {
     @Override
     public void run(String... args) throws IOException {
         logger.info("EXECUTING : command line runner");
-        ConcurrentSkipListMap blogList = egloosPostListReader.getPostList("http://shed.egloos.com");
+        //ConcurrentSkipListMap blogList = egloosPostListReader.getPostList("http://shed.egloos.com");
 
         Map.Entry<String, Element> entry;
 
+        /*
         while (( entry = blogList.pollFirstEntry()) != null) {
             Element link = entry.getValue();
             logger.debug(" \t text={} link={}", link.text(), link.attr("href"));
         }
+        */
     }
 }

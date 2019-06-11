@@ -7,11 +7,15 @@ import org.dskim.egloosExodus.staticSiteGenerator.HugoDelegator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 @Component
 @Data
+@DependsOn("blogList")
 public class BlogDownloaderManager {
     private static Logger logger = LoggerFactory.getLogger(BlogDownloaderManager.class);
 
@@ -20,6 +24,9 @@ public class BlogDownloaderManager {
 
     @Autowired
     EgloosBlogDownloader egloosBlogDownloader;
+
+    @Autowired
+    ConcurrentLinkedQueue blogList;
 
     Blog currentBlog;
 

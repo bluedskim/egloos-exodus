@@ -1,27 +1,34 @@
 package org.dskim.egloosExodus.conf;
 
+import org.dskim.egloosExodus.model.Blog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.Executor;
 
 @Configuration
 @EnableAsync
 public class SpringConf {
-	//@Bean
-	/*
-	public ConcurrentLinkedQueue<Element> blogList() {
-	return new ConcurrentLinkedQueue<Element>();
-	}
-	*/
+	private static final Logger logger = LoggerFactory.getLogger(SpringConf.class);
 
 	@Bean
+	public ConcurrentLinkedQueue<Blog> blogList() {
+	return new ConcurrentLinkedQueue();
+	}
+
+	/*
+	@Bean(name = "blogList")
 	public ConcurrentSkipListMap blogList() {
+		logger.debug("initializing blogList");
 		return new ConcurrentSkipListMap();
 	}
+	*/
 
 	/*
 	@Bean
@@ -32,6 +39,7 @@ public class SpringConf {
 
 	@Bean(name = "threadPoolTaskExecutor")
 	public Executor threadPoolTaskExecutor() {
+		logger.debug("initializing threadPoolTaskExecutor");
 		return new ThreadPoolTaskExecutor();
 	}
 }

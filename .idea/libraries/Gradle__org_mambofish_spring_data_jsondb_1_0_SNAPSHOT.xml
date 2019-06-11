@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: org.mambofish:spring-data-jsondb:1.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/mambofish/spring-data-jsondb/1.0-SNAPSHOT/spring-data-jsondb-1.0-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

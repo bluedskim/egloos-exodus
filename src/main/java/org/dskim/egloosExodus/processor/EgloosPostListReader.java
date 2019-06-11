@@ -20,13 +20,16 @@ import java.util.concurrent.ConcurrentSkipListMap;
 public class EgloosPostListReader {
 	private static final Logger logger = LogManager.getLogger(EgloosPostListReader.class);
 
+	/*
 	@Autowired
 	ConcurrentSkipListMap blogList;
+	*/
 
 	/**
 	 * 게시물 목록을 가져온다
 	 * 모든 링크들을 가져오고 해당 블로그의 글들만 필터링하자
 	 */
+	/*
 	public ConcurrentSkipListMap getPostList(String url) throws IOException {
 		logger.debug("url={}", url);
 
@@ -43,4 +46,5 @@ public class EgloosPostListReader {
 
 		return blogList;
 	}
+	*/
 }
