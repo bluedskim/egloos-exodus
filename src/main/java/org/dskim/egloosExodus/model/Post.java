@@ -2,16 +2,20 @@ package org.dskim.egloosExodus.model;
 
 import lombok.Data;
 import lombok.ToString;
+import org.dizitart.no2.Document;
+import org.dizitart.no2.mapper.Mappable;
+import org.dizitart.no2.mapper.NitriteMapper;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @ToString(exclude = "featuredImage, description, bodyText, bodyHtml, category, tags, prevPostUrl, postList")
-public class Post {
+public class Post implements Mappable, Serializable {
 	String id;		// 고유 아이디
 	String title;
 	String date;	// 2003/10/16 00:16
@@ -47,5 +51,21 @@ public class Post {
 		}
 		//return featuredImage;
 		return "";	// 헤더에 이미지가 표시되지 않는 문제있어 일단 사용하지 않음
+	}
+
+	@Override
+	public Document write(NitriteMapper mapper) {
+		Document document = new Document();
+		document.put("id", id);
+		document.put("title", title);
+		return document;
+	}
+
+	@Override
+	public void read(NitriteMapper mapper, Document document) {
+		if (document != null) {
+			id = (String)document.get("id");
+			title = (String)document.get("title");
+		}
 	}
 }

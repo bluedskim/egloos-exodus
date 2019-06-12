@@ -5,12 +5,16 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dizitart.no2.WriteResult;
+import org.dizitart.no2.objects.ObjectRepository;
+import org.dskim.egloosExodus.model.Blog;
 import org.dskim.egloosExodus.model.Post;
 import org.dskim.egloosExodus.staticSiteGenerator.StaticSiteGeneratorDelegator;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -41,15 +45,19 @@ public class EgloosBlogDownloader {
 
 	public boolean isDownloading = false;
 
+	@Autowired
+	ObjectRepository<Blog> downloadQueueRepo;
+
 	/**
 	 * 블로그 메인 주소를 받아서 전체 블로그를 다운로드 한다.
 	 *
 	 * @param siteGen
-	 * @param blogBaseUrl
+	 * @param blog
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean downLoadBlog(StaticSiteGeneratorDelegator siteGen, String blogBaseUrl) throws Exception {
+	public boolean downLoadBlog(StaticSiteGeneratorDelegator siteGen, Blog blog) throws Exception {
+		String blogBaseUrl = blog.getBlogBaseUrl();
 		logger.info("downloading blogBaseUrl={}", blogBaseUrl);
 
 		boolean isSuccess = false;
@@ -78,6 +86,12 @@ public class EgloosBlogDownloader {
 
 			siteGen.createPost(post);
 			postUrl = post.getPrevPostUrl();
+
+			blog.setCurrentPostUrl(post.getUrl());
+			//logger.debug("downloadQueueRepo.isClosed()={}", downloadQueueRepo.isClosed());
+			WriteResult updateResult = downloadQueueRepo.update(blog);
+			logger.debug("blog.getBlogBaseUrl()={}, blog.getCurrentPostUrl()={}, updateResult.getAffectedCount()={}", blog.getBlogBaseUrl(), blog.getCurrentPostUrl(), updateResult.getAffectedCount());
+			//logger.debug("downloadQueueRepo.isClosed()={}", downloadQueueRepo.isClosed());
 
 			logger.debug("sleeping... {}, postUrl={}", sleepTime, postUrl);
 			Thread.sleep(sleepTime);
@@ -144,7 +158,7 @@ public class EgloosBlogDownloader {
 		*/
 
 		Element blogPost = document.selectFirst("div.post_view");
-		logger.debug("blogPost={}", blogPost.html());
+		logger.debug("blogPost.html().length()={}", blogPost.html().length());
 
 		//'신고' 삭제
 		Element 신고 = blogPost.selectFirst("span:matchesOwn(신고)");

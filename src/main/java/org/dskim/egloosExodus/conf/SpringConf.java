@@ -1,19 +1,23 @@
 package org.dskim.egloosExodus.conf;
 
+import org.dizitart.no2.Nitrite;
+import org.dizitart.no2.NitriteCollection;
+import org.dizitart.no2.objects.ObjectRepository;
 import org.dskim.egloosExodus.model.Blog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.Executor;
 
 @Configuration
 @EnableAsync
+@EnableScheduling
 public class SpringConf {
 	private static final Logger logger = LoggerFactory.getLogger(SpringConf.class);
 
@@ -41,5 +45,25 @@ public class SpringConf {
 	public Executor threadPoolTaskExecutor() {
 		logger.debug("initializing threadPoolTaskExecutor");
 		return new ThreadPoolTaskExecutor();
+	}
+
+	@Bean
+	public Nitrite nitrite() {
+		Nitrite db = Nitrite.builder()
+				.compressed()
+				.filePath("/tmp/egloosExodus.nitrite")
+				.openOrCreate()
+				;
+		return db;
+	}
+
+	@Bean
+	public NitriteCollection stat() {
+		return nitrite().getCollection("stat");
+	}
+
+	@Bean
+	public ObjectRepository<Blog> downloadQueueRepo() {
+		return nitrite().getRepository(Blog.class);
 	}
 }

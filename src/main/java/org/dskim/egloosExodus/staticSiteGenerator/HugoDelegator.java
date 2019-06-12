@@ -1,5 +1,6 @@
 package org.dskim.egloosExodus.staticSiteGenerator;
 
+import lombok.Data;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -34,6 +35,7 @@ import java.util.Properties;
 /**
  * Hugo 를 이용한 정적 사이트 생성
  */
+@Data
 @Component
 public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	private static final Logger logger = LogManager.getLogger(HugoDelegator.class);
@@ -42,7 +44,7 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 
 	@Value(("${blog.rootDir}"))
 	String rootDir;
-	String baseDir;
+
 	String postTemplate = "+++\n" +
 			  "title = \"{title}\"\n" +
 			  "date = \"{date}\"\n" +
@@ -76,16 +78,14 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	public void init(Blog blog, String themeName) throws Exception {
 		logger.debug("blogName={}", blog.getBlogName());
 		this.blog = blog;
-		blog.setUserId(StringUtils.substringBetween(blog.getBlogBaseUrl(), "://", "."));
-		this.baseDir = blog.getUserId();
 
-		callCmd(new String[]{"rm", "-rf", rootDir + File.separator + baseDir}, null);
+		callCmd(new String[]{"rm", "-rf", rootDir + File.separator + blog.getUserId()}, null);
 		//callCmd(new String[]{"hugo", "new", "site", rootDir + File.separator + baseDir}, null);
-		callCmd(new String[]{"hugo", "new", "site", rootDir + File.separator + baseDir, "-f", "yml"}, null);
+		callCmd(new String[]{"hugo", "new", "site", rootDir + File.separator + blog.getUserId(), "-f", "yml"}, null);
 
 		//기본 테마 압축해제
 		//callCmd(new String[]{"tar", "-zxvf", rootDir + File.separator + "ananke.tgz", "-C", rootDir + File.separator + baseDir + File.separator + "themes/ananke", "--strip-components=1"}, null);
-		callCmd(new String[]{"tar", "-zxvf", hugoResourcesDir + File.separator + themeName + ".tgz", "-C", rootDir + File.separator + baseDir + File.separator + "themes"}, null);
+		callCmd(new String[]{"tar", "-zxvf", hugoResourcesDir + File.separator + themeName + ".tgz", "-C", rootDir + File.separator + blog.getUserId() + File.separator + "themes"}, null);
 
 		// config에 테마 추가
 		Map<String, Object> obj = yaml.load(new FileReader(hugoResourcesDir + File.separator + "hugo.config.yml"));
@@ -100,7 +100,7 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 		}
 
 		obj.put("title", blog.getBlogName());
-		yaml.dump(obj, new FileWriter(rootDir + File.separator + baseDir + File.separator + "config.yml"));
+		yaml.dump(obj, new FileWriter(rootDir + File.separator + blog.getUserId() + File.separator + "config.yml"));
 		/*
 		JSONObject hugoConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(new File(rootDir + File.separator + baseDir + File.separator + "config.json"), "utf8"));
 		hugoConfig.put("theme", "ananke");
@@ -109,7 +109,7 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 
 		//static 에 필요 파일들 복사
 		FileUtils.copyFile(new File(hugoResourcesDir + File.separator + "hugo.custom.css")
-				, new File(rootDir + File.separator + baseDir + File.separator + "static" + File.separator + "custom.css"));
+				, new File(rootDir + File.separator + blog.getUserId() + File.separator + "static" + File.separator + "custom.css"));
 	}
 
 	private String[] getEgloosProfileImage(Blog blog) throws IOException {
@@ -144,7 +144,7 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	public String saveResourceFromUrl(String[] resourceUrl) throws IOException {
 		try{
 			logger.debug("resourceUrl={} / {}", resourceUrl[0], resourceUrl[1]);
-			FileUtils.copyURLToFile(new URL(resourceUrl[1]), new File(rootDir + File.separator + baseDir + "/content" + resourceUrl[0]),5000,5000);
+			FileUtils.copyURLToFile(new URL(resourceUrl[1]), new File(rootDir + File.separator + blog.getUserId() + "/content" + resourceUrl[0]),5000,5000);
 		} catch(Exception e) {
 			logger.error("리소스 다운로드 오류는 무시함", e);
 		}
@@ -171,7 +171,7 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 											.replace("#", "_"));
 		String categoryFolderName = post.getCategory();
 
-		String folderPath = rootDir + File.separator + baseDir + "/content/posts" + (StringUtils.isEmpty(categoryFolderName) ? "" : "/" + categoryFolderName);
+		String folderPath = rootDir + File.separator + blog.getUserId() + "/content/posts" + (StringUtils.isEmpty(categoryFolderName) ? "" : "/" + categoryFolderName);
 		File containingFolder = new File(folderPath);
 		logger.debug("folderPath={}, exists={}", containingFolder.getAbsolutePath(), containingFolder.exists());
 
@@ -196,7 +196,7 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 														  (categoryFolderName == null ? "" : categoryFolderName + "/") +
 															postFileName + (postCountWithSameTilte > 0 ? "_" + postCountWithSameTilte : "") + ".md"
 								  , "-c"
-								  , rootDir + File.separator + baseDir + File.separator + "content"
+								  , rootDir + File.separator + blog.getUserId() + File.separator + "content"
 		}, null);
 		outStr = outStr.replaceAll("created", "");
 		outStr = outStr.trim();
@@ -227,8 +227,8 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	 */
 	@Override
 	public String generateStaticFles() throws Exception {
-		logger.debug("baseDir={}", baseDir);
-		String generateStaticFlesRtn = callCmd(new String[]{"hugo", "-s", rootDir + File.separator + baseDir}, null);
+		logger.debug("baseDir={}", blog.getUserId());
+		String generateStaticFlesRtn = callCmd(new String[]{"hugo", "-s", rootDir + File.separator + blog.getUserId()}, null);
 		logger.debug("generateStaticFlesRtn={}", generateStaticFlesRtn);
 		// 압축하기
 		//String zipFlesRtn = callCmd(new String[]{"zip", "-r", "\"" + rootDir + File.separator + baseDir + ".zip\"", rootDir + File.separator + baseDir}, null);
@@ -237,7 +237,7 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 		//String zipFlesRtn = callCmd(new String[]{"zip", "-b", rootDir, "-r", baseDir + ".zip", baseDir}, null);
 		// tar -zcvf /home/bluedskim/IdeaProjects/egloosexodus/blogRootDir/하고\ 싶은\ 걸\ 하세요\ Do\ What\ You\ Want.tgz -C /home/bluedskim/IdeaProjects/egloosexodus/blogRootDir 하고\ 싶은\ 걸\ 하세요\ Do\ What\ You\ Want
 
-		String[] zipCommand = new String[]{"tar", "-zcf", rootDir + File.separator + baseDir + ".tgz", "-C", rootDir, baseDir};
+		String[] zipCommand = new String[]{"tar", "-zcf", rootDir + File.separator + blog.getUserId() + ".tgz", "-C", rootDir, blog.getUserId()};
 		logger.debug("zipCommand={}", String.join(" ", zipCommand));
 		String zipFlesRtn = callCmd(zipCommand, null);
 

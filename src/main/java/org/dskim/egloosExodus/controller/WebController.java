@@ -4,6 +4,9 @@ import net.minidev.json.JSONObject;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang3.StringUtils;
+import org.dizitart.no2.objects.Cursor;
+import org.dizitart.no2.objects.ObjectRepository;
 import org.dskim.egloosExodus.model.Blog;
 import org.dskim.egloosExodus.processor.EgloosBlogDownloader;
 import org.joda.time.DateTime;
@@ -15,15 +18,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 @Controller
 public class WebController {
@@ -41,15 +45,29 @@ public class WebController {
     @Value(("${blog.rootDir}"))
     String rootDirPath;
 
+    @Autowired
+    ObjectRepository<Blog> downloadQueueRepo;
+
     @GetMapping("")
     public String index(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
         logger.debug("blogDownloaderManager.getCurrentBlog()={}", blogDownloaderManager.getCurrentBlog());
 
         model.addAttribute("name", name);
         model.addAttribute("currentBlog", blogDownloaderManager.getCurrentBlog());
+
+        Cursor<Blog> waitingList = downloadQueueRepo.find();
+        logger.debug("waitingList.size()={}", waitingList.size());
+        model.addAttribute("waitingList", waitingList.toList());
         return "index";
     }
 
+    /**
+     * @deprecated
+     * @param blog
+     * @param model
+     * @return
+     * @throws Exception
+     */
     @PostMapping("download")
     public ModelAndView download(Blog blog, Model model) throws Exception {
         if(blog.getBlogBaseUrl().indexOf("http://") < 0) {
@@ -64,18 +82,36 @@ public class WebController {
         return new ModelAndView("redirect:/");
     }
 
+    @PostMapping("queue")
+    public ModelAndView addToDownloadQueue(Blog blog, Model model) throws Exception {
+        if(blog.getBlogBaseUrl().indexOf("http://") < 0) {
+            blog.setBlogBaseUrl("http://" + blog.getBlogBaseUrl());
+        }
+        blog.setUserId(StringUtils.substringBetween(blog.getBlogBaseUrl(), "://", "."));
+        logger.debug("blog={}", blog);
+
+        downloadQueueRepo.insert(blog);
+        Cursor<Blog> waitingList = downloadQueueRepo.find();
+        logger.debug("waitingList.size()={}", waitingList.size());
+        model.addAttribute("waitingList", waitingList.toList());
+
+        model.addAttribute("currentBlog", blog);
+        return new ModelAndView("redirect:/");
+    }
+
     /**
      * http://localhost:8080/ee/deleteOldBlog?blogDurationMin=1440
      *
-     * @param blogDurationMin
      * @return
      * @throws Exception
      */
     @GetMapping("deleteOldBlog")
     @ResponseBody
     @Scheduled(fixedDelay = 3600000, initialDelay = 3600000)    // 한시간에 한번씩
-    public JSONObject deleteOldBlog(@RequestParam(value="blogDurationMin", required=false) Long blogDurationMin) throws Exception {
-        if(blogDurationMin == null) blogDurationMin = new Long(this.blogDurationMin);
+    public JSONObject deleteOldBlog(
+            //@RequestParam(value="blogDurationMin", required=false) Long blogDurationMin
+        ) throws Exception {
+        //if(blogDurationMin == null) blogDurationMin = new Long(this.blogDurationMin);
         DateTime limitDateTime = new DateTime(DateTimeUtils.currentTimeMillis() - blogDurationMin * 60 * 1000);
         logger.debug("blogDurationMin={}, limitDateTime={}", blogDurationMin, limitDateTime);
 

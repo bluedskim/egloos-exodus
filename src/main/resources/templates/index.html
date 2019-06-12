@@ -45,10 +45,18 @@
         </a>
     </span>
 </span>
-<span th:unless="${currentBlog != null}">
+
+<span th:if="${waitingList != null && #lists.size(waitingList) > 0}">
+    <h2>다운로드 대기중 블로그</h2>
+    <ol>
+        <li th:each="blog:${waitingList}" th:text="${blog.blogBaseUrl}"></li>
+    </ol>
+</span>
+
+<span>
     <hr/>
     <h2>블로그 정보 입력</h2>
-    <form id="download" method="post" action="download">
+    <form id="download" method="post" action="queue">
         <ul><!--
             <li>
                 <label for="blogName">블로그 명 : </label>
