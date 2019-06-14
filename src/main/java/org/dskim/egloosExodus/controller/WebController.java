@@ -62,6 +62,7 @@ public class WebController {
     }
 
     /**
+     * 바로 다룬로드 하는거 지원하지 않습니다.
      * @deprecated
      * @param blog
      * @param model

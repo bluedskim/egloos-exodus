@@ -63,7 +63,8 @@ public class EgloosBlogDownloader {
 		boolean isSuccess = false;
 		isDownloading = true;
 		this.blogName = blogName;
-		this.blogBaseUrl = StringUtils.substringBeforeLast(blogBaseUrl, "/");
+		//this.blogBaseUrl = StringUtils.substringBeforeLast(blogBaseUrl, "/");
+		this.blogBaseUrl = "http://" + blog.getUserId() + ".egloos.com";
 
 		String postUrl = getFirstPostUrl(blogBaseUrl);
 		Post post = null;
@@ -134,7 +135,7 @@ public class EgloosBlogDownloader {
 		}
 
 		Element postAnchor = document.selectFirst("h2.entry-title > a");
-		firstPostUrl = blogBaseUrl + postAnchor.attr("href");
+		firstPostUrl = blogBaseUrl + "/" + postAnchor.attr("href");
 		logger.debug("firstPostUrl={}", firstPostUrl);
 
 		return firstPostUrl;
