@@ -41,6 +41,7 @@ Spring Integration 으로 posting Lister, html downloader, html-to-markdown tran
 * ~~내 블로그 합쳐서 생성해보기~~
 * ~~대기열 제공(대기열을 저장하고 서버 재기동시 자동으로 resume~~
 * ~~블로그 주소 끝에 / 가 없는 경우 오류 해결~~
+* ~~egloosExodus.nitrite 경로를 하드코딩 하지 말자~~
 
 * 저장 공간 문제(하나의 블로그가 10G?)
 * static 생성 오류 시 메일 보내고 작업 초기화

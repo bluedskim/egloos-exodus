@@ -72,7 +72,7 @@ public class BlogDownloaderManager {
         logger.debug("deleteResult.getAffectedCount()={}", deleteResult.getAffectedCount());
     }
 
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelay = 1000 * 10)
     public void watchQueue() throws Exception {
         //logger.debug("checking queue...");
         Cursor results = downloadQueueRepo.find(FindOptions.limit(0, 1));

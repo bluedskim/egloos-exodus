@@ -6,6 +6,7 @@ import org.dizitart.no2.objects.ObjectRepository;
 import org.dskim.egloosExodus.model.Blog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -20,6 +21,9 @@ import java.util.concurrent.Executor;
 @EnableScheduling
 public class SpringConf {
 	private static final Logger logger = LoggerFactory.getLogger(SpringConf.class);
+
+	@Value(("${nitrite.path}"))
+	String nitritePath;
 
 	@Bean
 	public ConcurrentLinkedQueue<Blog> blogList() {
@@ -51,7 +55,7 @@ public class SpringConf {
 	public Nitrite nitrite() {
 		Nitrite db = Nitrite.builder()
 				.compressed()
-				.filePath("/tmp/egloosExodus.nitrite")
+				.filePath(nitritePath)
 				.openOrCreate()
 				;
 		return db;
