@@ -227,7 +227,7 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	 */
 	@Override
 	public String generateStaticFles() throws Exception {
-		logger.debug("baseDir={}", blog.getUserId());
+		logger.debug("calling hugo. baseDir={}", blog.getUserId());
 		String generateStaticFlesRtn = callCmd(new String[]{"hugo", "-s", rootDir + File.separator + blog.getUserId()}, null);
 		logger.debug("generateStaticFlesRtn={}", generateStaticFlesRtn);
 		// 압축하기

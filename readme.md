@@ -42,15 +42,17 @@ Spring Integration 으로 posting Lister, html downloader, html-to-markdown tran
 * ~~대기열 제공(대기열을 저장하고 서버 재기동시 자동으로 resume~~
 * ~~블로그 주소 끝에 / 가 없는 경우 오류 해결~~
 * ~~egloosExodus.nitrite 경로를 하드코딩 하지 말자~~
+* ~~서버 리스타트시 자동 실행 cron에 등록~~
 
 * 저장 공간 문제(하나의 블로그가 10G?)
-* static 생성 오류 시 메일 보내고 작업 초기화
-* theme : ugly url 기반일 때 category.html, tags.html 의 taxanomy에 링크 오류
-* 하위 페이지에서 featured image경로 오류 http://samba.iptime.org/ee/A%20Citizen%20of%20(no)%20obscure%20city/public/posts/page/2.html
-* posting별 featured_image적용 하기. 아마도 theme쪽에서 변경해야 할 듯
-* 원본에 비해 폰트가 너무 큼
 ----------------------------
 * 통계(현재까지 다운로드한 블로그 리스트, 총 블로그 개수, 총 용량 ...)
+* static 생성 오류 시 메일 보내고 작업 초기화
+* theme : ugly url 기반일 때 category.html, tags.html 의 taxanomy에 링크 오류
+    * 하위 페이지에서 featured image경로 오류 http://samba.iptime.org/ee/A%20Citizen%20of%20(no)%20obscure%20city/public/posts/page/2.html
+    * posting별 featured_image적용 하기. 아마도 theme쪽에서 변경해야 할 듯
+    * 원본에 비해 폰트가 너무 큼
+* resume 되는 경우 이메일 내용 오류 (소요 시간, 다운로드 글개수)
 * 블로그 소유자만 다운로드 받을 수 있도록
 * 모바일 사이트에서 다운로드 받는게 더 낫지 않나?
 * 카테고리 목록

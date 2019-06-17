@@ -246,8 +246,8 @@ public class EgloosBlogDownloader {
 		if(comment != null) {
 			post.setBodyHtml(post.getBodyHtml() + "\n\n<ul>" + comment.html() + "</ul>");
 		}
-		logger.debug("post.getBodyText()={}", post.getBodyText());
-		logger.debug("post.getBodyHtml()={}", post.getBodyHtml());
+		//logger.debug("post.getBodyText()={}", post.getBodyText());
+		//logger.debug("post.getBodyHtml()={}", post.getBodyHtml());
 
 		Element tagListContainer = blogPost.select("div.post_taglist").first();
 		if(tagListContainer != null) {
