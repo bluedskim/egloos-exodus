@@ -3,6 +3,13 @@ spring:
     active: "dev"
   main:
     banner-mode: "off"
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:mysql://samba.iptime.org:9096/ee_dev
+    username: ee
+    password: DcvqyQDtuFt3C73m
 
 server:
   email: bluedskim@gmail.com
@@ -45,6 +52,15 @@ hugo:
 
 spring:
   profiles: prod
+  main:
+    banner-mode: "off"
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:mysql://samba.iptime.org:9096/ee_prod
+    username: ee
+    password: DcvqyQDtuFt3C73m
 
 hugo:
   resourcesDir:

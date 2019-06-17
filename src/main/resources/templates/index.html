@@ -28,7 +28,16 @@
 </script>
 </head>
 <body>
-<h1>Egloos Exodus</h1>
+<h1><a href="/ee">Egloos Exodus</a></h1>
+<span th:if="${alreadyRegisteredBlogCount != null}">
+    <span th:if="${alreadyRegisteredBlogCount == 0}">
+        * <a th:href="${addedBlog.blogBaseUrl}" th:text="${addedBlog.blogBaseUrl} + '을(를) 다운로드 대기 리스트에 추가하였습니다.'"></a>
+    </span>
+    <span th:if="${alreadyRegisteredBlogCount > 0}">
+        * <a th:href="${addedBlog.blogBaseUrl}" th:text="${addedBlog.blogBaseUrl} + '은(는) 대기 리스트에 이미 있거나 다운로드 완료되었으므로 대기리스트에 추가되지 않았습니다.'"></a>
+    </span>
+</span>
+
 <div th:text="'* 남은 저장공간 : ' + ${usableSpace} + 'gb'">
 </div>
 

@@ -1,59 +1,49 @@
 package org.dskim.egloosExodus.model;
 
 import lombok.Data;
-import org.dizitart.no2.Document;
-import org.dizitart.no2.mapper.Mappable;
-import org.dizitart.no2.mapper.NitriteMapper;
-import org.dizitart.no2.objects.Id;
+import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
+import javax.persistence.*;
+
 @Data
-public class Blog implements Mappable {
-	DateTime downloadStartDate = new DateTime();
+@Entity
+public class Blog {
+	@Id
+	@GeneratedValue(strategy= GenerationType.AUTO)
+	private Integer id;
+
+	@Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+	DateTime downloadStartDate ;
+
+	@Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+	DateTime downloadEndDate ;
+
+	@Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+	DateTime regDate ;
+
 	String serviceName; // ex) 네이버 블로그, 이글루스, 티스토리
 
-	@Id
 	String userId;	// 해당 서비스의 사용자 아이디(baseDir의 최하위 폴더명)
 	String blogName;
 	String email;
 	String blogBaseUrl;
+	@Transient
 	Post currentPost;
 	String currentPostUrl;
 	int currentPostNumber = 0;
+	boolean isDownloaded = false;
+	// 압축파일 사이즈 mb
+	long fileSize;
 	//List<Post> postList;
 
 	public Blog() {
 		super();
+		regDate = new DateTime();
 	}
 
 	public Blog(String userId) {
-		super();
+		this();
 		this.userId = userId;
-	}
-
-	@Override
-	public Document write(NitriteMapper mapper) {
-		Document document = new Document();
-		document.put("userId", userId);
-		document.put("blogName", blogName);
-		document.put("email", email);
-		document.put("blogBaseUrl", blogBaseUrl);
-		document.put("currentPostUrl", currentPostUrl);
-		//document.put("currentPost", currentPost);
-		document.put("currentPostNumber", currentPostNumber);
-		return document;
-	}
-
-	@Override
-	public void read(NitriteMapper mapper, Document document) {
-		if (document != null) {
-			userId = (String)document.get("userId");
-			blogName = (String)document.get("blogName");
-			email = (String)document.get("email");
-			blogBaseUrl = (String)document.get("blogBaseUrl");
-			currentPostUrl = (String)document.get("currentPostUrl");
-			//currentPost = (Post)document.get("currentPost");
-			currentPostNumber = (Integer)document.get("currentPostNumber");
-		}
 	}
 }

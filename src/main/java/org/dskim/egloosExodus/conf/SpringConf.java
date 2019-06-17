@@ -1,8 +1,5 @@
 package org.dskim.egloosExodus.conf;
 
-import org.dizitart.no2.Nitrite;
-import org.dizitart.no2.NitriteCollection;
-import org.dizitart.no2.objects.ObjectRepository;
 import org.dskim.egloosExodus.model.Blog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +48,7 @@ public class SpringConf {
 		return new ThreadPoolTaskExecutor();
 	}
 
+	/*
 	@Bean
 	public Nitrite nitrite() {
 		Nitrite db = Nitrite.builder()
@@ -70,4 +68,5 @@ public class SpringConf {
 	public ObjectRepository<Blog> downloadQueueRepo() {
 		return nitrite().getRepository(Blog.class);
 	}
+	*/
 }

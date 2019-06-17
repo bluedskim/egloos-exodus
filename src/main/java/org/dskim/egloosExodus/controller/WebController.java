@@ -5,23 +5,22 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.StringUtils;
-import org.dizitart.no2.objects.Cursor;
-import org.dizitart.no2.objects.ObjectRepository;
 import org.dskim.egloosExodus.model.Blog;
 import org.dskim.egloosExodus.processor.EgloosBlogDownloader;
+import org.dskim.egloosExodus.repository.BlogRepository;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.File;
@@ -46,9 +45,9 @@ public class WebController {
     String rootDirPath;
 
     @Autowired
-    ObjectRepository<Blog> downloadQueueRepo;
+    BlogRepository blogRepo;
 
-    @GetMapping("")
+    @RequestMapping("")
     public String index(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
         //logger.debug("blogDownloaderManager.getCurrentBlog()={}", blogDownloaderManager.getCurrentBlog());
 
@@ -56,9 +55,8 @@ public class WebController {
         model.addAttribute("currentBlog", blogDownloaderManager.getCurrentBlog());
         model.addAttribute("usableSpace", new File("/").getUsableSpace() /1024 /1024 /1024);
 
-        Cursor<Blog> waitingList = downloadQueueRepo.find();
-        logger.debug("waitingList.size()={}", waitingList.size());
-        model.addAttribute("waitingList", waitingList.toList());
+        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE, Sort.by(Sort.Direction.ASC, "regDate"));
+        model.addAttribute("waitingList", blogRepo.findAllByIsDownloaded(false, pageable));
         return "index";
     }
 
@@ -90,15 +88,18 @@ public class WebController {
             blog.setBlogBaseUrl("http://" + blog.getBlogBaseUrl());
         }
         blog.setUserId(StringUtils.substringBetween(blog.getBlogBaseUrl(), "://", "."));
+        blog.setServiceName(StringUtils.substringBetween(blog.getBlogBaseUrl(), blog.getUserId() + ".", ".com"));
         logger.debug("blog={}", blog);
+        model.addAttribute("addedBlog", blog);
 
-        downloadQueueRepo.insert(blog);
-        Cursor<Blog> waitingList = downloadQueueRepo.find();
-        logger.debug("waitingList.size()={}", waitingList.size());
-        model.addAttribute("waitingList", waitingList.toList());
+        long alreadyRegisteredBlogCount = blogRepo.countByUserIdAndServiceName(blog.getUserId(), blog.getServiceName());
+        model.addAttribute("alreadyRegisteredBlogCount", alreadyRegisteredBlogCount);
 
-        model.addAttribute("currentBlog", blog);
-        return new ModelAndView("redirect:/");
+        if(alreadyRegisteredBlogCount == 0) {
+            blog = blogRepo.save(blog);
+        }
+
+        return new ModelAndView("forward:/");
     }
 
     /**

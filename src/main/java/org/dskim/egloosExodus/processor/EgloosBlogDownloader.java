@@ -5,10 +5,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dizitart.no2.WriteResult;
-import org.dizitart.no2.objects.ObjectRepository;
 import org.dskim.egloosExodus.model.Blog;
 import org.dskim.egloosExodus.model.Post;
+import org.dskim.egloosExodus.repository.BlogRepository;
 import org.dskim.egloosExodus.staticSiteGenerator.StaticSiteGeneratorDelegator;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -43,10 +42,10 @@ public class EgloosBlogDownloader {
 	@Value("${blog.minSleepTime}")
 	int minSleepTime;
 
-	public boolean isDownloading = false;
-
 	@Autowired
-	ObjectRepository<Blog> downloadQueueRepo;
+	BlogRepository blogRepo;
+
+	public boolean isDownloading = false;
 
 	/**
 	 * 블로그 메인 주소를 받아서 전체 블로그를 다운로드 한다.
@@ -89,9 +88,8 @@ public class EgloosBlogDownloader {
 			postUrl = post.getPrevPostUrl();
 
 			blog.setCurrentPostUrl(post.getUrl());
-			//logger.debug("downloadQueueRepo.isClosed()={}", downloadQueueRepo.isClosed());
-			WriteResult updateResult = downloadQueueRepo.update(blog);
-			logger.debug("blog.getBlogBaseUrl()={}, blog.getCurrentPostUrl()={}, updateResult.getAffectedCount()={}", blog.getBlogBaseUrl(), blog.getCurrentPostUrl(), updateResult.getAffectedCount());
+			blogRepo.save(blog);
+			logger.debug("blog.getBlogBaseUrl()={}, blog.getCurrentPostUrl()={}", blog.getBlogBaseUrl(), blog.getCurrentPostUrl());
 			//logger.debug("downloadQueueRepo.isClosed()={}", downloadQueueRepo.isClosed());
 
 			logger.debug("sleeping... {}, postUrl={}", sleepTime, postUrl);

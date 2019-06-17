@@ -44,9 +44,9 @@ Spring Integration 으로 posting Lister, html downloader, html-to-markdown tran
 * ~~egloosExodus.nitrite 경로를 하드코딩 하지 말자~~
 * ~~서버 리스타트시 자동 실행 cron에 등록~~
 * ~~저장 공간 문제(하나의 블로그가 10G?)~~
-* 통계(현재까지 다운로드한 블로그 리스트, 총 블로그 개수, 총 용량 ...)
 
-----------------------------
+-------------- ver1.1 --------------
+* 통계(현재까지 다운로드한 블로그 리스트, 총 블로그 개수, 총 용량 ...)
 * static 생성 오류 시 메일 보내고 작업 초기화
 * theme : ugly url 기반일 때 category.html, tags.html 의 taxanomy에 링크 오류
     * 하위 페이지에서 featured image경로 오류 http://samba.iptime.org/ee/A%20Citizen%20of%20(no)%20obscure%20city/public/posts/page/2.html

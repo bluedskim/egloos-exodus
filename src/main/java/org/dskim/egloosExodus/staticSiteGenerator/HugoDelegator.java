@@ -22,12 +22,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;
 
-import javax.mail.*;
+import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.*;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -247,7 +249,7 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 		String[] zipCommand = new String[]{"tar", "-zcf", rootDir + File.separator + blog.getUserId() + ".tgz", "-C", rootDir, blog.getUserId()};
 		logger.debug("zipCommand={}", String.join(" ", zipCommand));
 		String zipFlesRtn = callCmd(zipCommand, null);
-
+		blog.setFileSize(new File(rootDir + File.separator + blog.getUserId() + ".tgz").length() / (1024 * 1024));
 		logger.debug("zipFlesRtn={}", zipFlesRtn);
 		// 메일 보내기
 		sendDownloadCompleteAlarm(blog, senderMailId, senderMailpw);
