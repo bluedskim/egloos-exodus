@@ -54,6 +54,7 @@ public class WebController {
 
         model.addAttribute("name", name);
         model.addAttribute("currentBlog", blogDownloaderManager.getCurrentBlog());
+        model.addAttribute("usableSpace", new File("/").getUsableSpace() /1024 /1024 /1024);
 
         Cursor<Blog> waitingList = downloadQueueRepo.find();
         logger.debug("waitingList.size()={}", waitingList.size());

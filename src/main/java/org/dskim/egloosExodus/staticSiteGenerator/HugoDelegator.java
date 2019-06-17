@@ -158,6 +158,9 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	 */
 	@Override
 	public void createPost(Post post) throws Exception {
+		// post를 저장하려면 1gb의 여유공간이 필요
+		isDiskAvailable(1024 * 1024 * 1024);
+
 		blog.setCurrentPost(post);
 		blog.setCurrentPostNumber(blog.getCurrentPostNumber()+1);
 		// 파일명에 / 는 _ 로 변경, " 는 없앰
@@ -227,6 +230,8 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	 */
 	@Override
 	public String generateStaticFles() throws Exception {
+		// hugo로 html생성하려면 원래 폴더 사이즈의 1.2의 여유공간이 필요
+		isDiskAvailable(FileUtils.sizeOfDirectory(new File(rootDir + File.separator + blog.getUserId())) * 1.2);
 		logger.debug("calling hugo. baseDir={}", blog.getUserId());
 		String generateStaticFlesRtn = callCmd(new String[]{"hugo", "-s", rootDir + File.separator + blog.getUserId()}, null);
 		logger.debug("generateStaticFlesRtn={}", generateStaticFlesRtn);
@@ -237,6 +242,8 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 		//String zipFlesRtn = callCmd(new String[]{"zip", "-b", rootDir, "-r", baseDir + ".zip", baseDir}, null);
 		// tar -zcvf /home/bluedskim/IdeaProjects/egloosexodus/blogRootDir/하고\ 싶은\ 걸\ 하세요\ Do\ What\ You\ Want.tgz -C /home/bluedskim/IdeaProjects/egloosexodus/blogRootDir 하고\ 싶은\ 걸\ 하세요\ Do\ What\ You\ Want
 
+		// 압축하려면 원래 폴더 사이즈의 여유공간이 필요
+		isDiskAvailable(FileUtils.sizeOfDirectory(new File(rootDir + File.separator + blog.getUserId())));
 		String[] zipCommand = new String[]{"tar", "-zcf", rootDir + File.separator + blog.getUserId() + ".tgz", "-C", rootDir, blog.getUserId()};
 		logger.debug("zipCommand={}", String.join(" ", zipCommand));
 		String zipFlesRtn = callCmd(zipCommand, null);
@@ -246,6 +253,15 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 		sendDownloadCompleteAlarm(blog, senderMailId, senderMailpw);
 
 		return generateStaticFlesRtn;
+	}
+
+	public boolean isDiskAvailable(double minStoage) throws InterruptedException {
+		logger.debug("저장공간 체크 minStoage={}gb, usableSpace={}gb", minStoage /1024 /1024 /1024, new File("/").getUsableSpace() /1024 /1024 /1024);
+		while(new File("/").getUsableSpace() < minStoage) {
+			logger.debug("저장공간 부족! minStoage={}gb, usableSpace={}gb", minStoage /1024 /1024 /1024, new File("/").getUsableSpace() /1024 /1024 /1024);
+			Thread.sleep(1000 * 10 * 6);
+		}
+		return true;
 	}
 
 	/**
