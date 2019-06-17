@@ -2,6 +2,7 @@ package org.dskim.egloosExodus.controller;
 
 import lombok.Data;
 import org.dizitart.no2.FindOptions;
+import org.dizitart.no2.NitriteCollection;
 import org.dizitart.no2.WriteResult;
 import org.dizitart.no2.objects.Cursor;
 import org.dizitart.no2.objects.ObjectRepository;
@@ -37,6 +38,9 @@ public class BlogDownloaderManager {
 
     @Autowired
     ObjectRepository<Blog> downloadQueueRepo;
+
+    @Autowired
+    NitriteCollection stat;
 
     Blog currentBlog;
 
