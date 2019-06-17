@@ -110,7 +110,7 @@ public class WebController {
      */
     @GetMapping("deleteOldBlog")
     @ResponseBody
-    @Scheduled(fixedDelay = 3600000, initialDelay = 3600000)    // 한시간에 한번씩
+    @Scheduled(fixedDelay = 3600000, initialDelay = 0)    // 한시간에 한번씩
     public JSONObject deleteOldBlog(
             //@RequestParam(value="blogDurationMin", required=false) Long blogDurationMin
         ) throws Exception {

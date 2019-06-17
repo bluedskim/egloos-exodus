@@ -67,4 +67,4 @@ hugo:
 
 blog:
   # 다운로드 받은 불로그 보유기간. 1440 : 하루 / 1440000 : 1000일
-  durationMin: 1440000
+  durationMin: 1440
