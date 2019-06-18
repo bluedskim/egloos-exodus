@@ -47,7 +47,7 @@ footnoteReturnLinkContents: ""
 # google analytics tracking id
 googleAnalytics:            ""
 # if true, auto-detect Chinese/Japanese/Korean Languages in the content. (.Summary and .WordCount can work properly in CJKLanguage)
-hasCJKLanguage:             false
+hasCJKLanguage:             true
 languageCode:               ""
 layoutDir:                  "layouts"
 # Enable Logging
@@ -62,7 +62,7 @@ noChmod:                    false
 # Don't sync modification time of files
 noTimes:                    false
 # Pagination
-paginate:                   10
+paginate:                   9
 paginatePath:               "page"
 # See "content-management/permalinks"
 permalinks:

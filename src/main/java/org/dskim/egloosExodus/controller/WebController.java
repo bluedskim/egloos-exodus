@@ -121,14 +121,14 @@ public class WebController {
         int deletedCount = 0;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-        boolean deleted = false;
         File rootDir = new File(rootDirPath);
         LinkedList<File> tgzFiles = (LinkedList<File>)FileUtils.listFiles(rootDir, new WildcardFileFilter("*.tgz"), null);
         for (File tgzFile : tgzFiles) {
             logger.debug("tgzFile={}, lastModified={}, date={}, deleted?={}", tgzFile.getName(), tgzFile.lastModified(), sdf.format(tgzFile.lastModified()), limitDateTime.isAfter(tgzFile.lastModified()));
             if(limitDateTime.isAfter(tgzFile.lastModified())) {
-                FileUtils.deleteDirectory(tgzFile);
-                logger.debug(" \t deleted={}", deleted);
+                tgzFile.delete();
+                deletedCount++;
+                logger.debug(" \t deletedCount={}", deletedCount);
             }
         }
 
@@ -137,7 +137,8 @@ public class WebController {
             logger.debug("blogDir={}, lastModified={}, date={}, deleted?={}", blogDir.getName(), blogDir.lastModified(), sdf.format(blogDir.lastModified()), limitDateTime.isAfter(blogDir.lastModified()));
             if(limitDateTime.isAfter(blogDir.lastModified())) {
                 FileUtils.deleteDirectory(blogDir);//
-                logger.debug(" \t deleted={}", deleted);
+                deletedCount++;
+                logger.debug(" \t deletedCount={}", deletedCount);
             }
         }
 
