@@ -46,10 +46,11 @@ public class EgloosBlogDownloader {
 	 *
 	 * @param siteGen
 	 * @param blog
+	 * @param maxPostCount
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean downLoadBlog(StaticSiteGeneratorDelegator siteGen, Blog blog) throws Exception {
+	public boolean downLoadBlog(StaticSiteGeneratorDelegator siteGen, Blog blog, Boolean isPreview, int maxPostCount) throws Exception {
 		logger.info("downloading blogBaseUrl={}", blog.getBlogBaseUrl());
 
 		boolean isSuccess = false;
@@ -82,14 +83,14 @@ public class EgloosBlogDownloader {
 			postUrl = post.getPrevPostUrl();
 
 			blog.setCurrentPostUrl(post.getUrl());
-			blogRepo.save(blog);
+			if(!isPreview) blogRepo.save(blog);
 			logger.debug("blog.getBlogBaseUrl()={}, blog.getCurrentPostUrl()={}", blog.getBlogBaseUrl(), blog.getCurrentPostUrl());
 			//logger.debug("downloadQueueRepo.isClosed()={}", downloadQueueRepo.isClosed());
 
 			logger.debug("sleeping... {}, postUrl={}", sleepTime, postUrl);
 			Thread.sleep(sleepTime);
 
-		} while (postUrl != null);
+		} while (postUrl != null && --maxPostCount > 0);
 
 		currentBlogNo = 1;
 		isDownloading = false;

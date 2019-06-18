@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.dskim.egloosExodus.model.Blog;
 import org.dskim.egloosExodus.processor.EgloosBlogDownloader;
 import org.dskim.egloosExodus.repository.BlogRepository;
+import org.dskim.egloosExodus.staticSiteGenerator.HugoDelegator;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
 import org.slf4j.Logger;
@@ -36,6 +37,9 @@ public class WebController {
     BlogDownloaderManager blogDownloaderManager;
 
     @Autowired
+    HugoDelegator hugo;
+
+    @Autowired
     EgloosBlogDownloader egloosBlogDownloader;
 
     @Value("${blog.durationMin}")
@@ -61,8 +65,9 @@ public class WebController {
     }
 
     /**
-     * 바로 다룬로드 하는거 지원하지 않습니다.
      * @deprecated
+     * 바로 다룬로드 하는거 지원하지 않습니다.
+     *
      * @param blog
      * @param model
      * @return
@@ -80,6 +85,32 @@ public class WebController {
 
         model.addAttribute("currentBlog", blog);
         return new ModelAndView("redirect:/");
+    }
+
+    /**
+     * 미리보기
+     *
+     * @deprecated
+     * @param blog
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("preview")
+    public ModelAndView preview(Blog blog, @RequestParam(defaultValue = "15") int maxPostCount, Model model) throws Exception {
+        if(blog.getBlogBaseUrl().indexOf("http://") < 0) {
+            blog.setBlogBaseUrl("http://" + blog.getBlogBaseUrl());
+        }
+        blog.setUserId(StringUtils.substringBetween(blog.getBlogBaseUrl(), "://", "."));
+        blog.setServiceName(StringUtils.substringBetween(blog.getBlogBaseUrl(), blog.getUserId() + ".", ".com"));
+        logger.debug("previewBlog={}", blog);
+
+        hugo.init(blog, "ananke");
+        egloosBlogDownloader.downLoadBlog(hugo, blog, true, maxPostCount);
+        hugo.generateStaticFles(blog);
+
+        model.addAttribute("previewBlog", blog);
+        return new ModelAndView("forward:/");
     }
 
     @PostMapping("queue")

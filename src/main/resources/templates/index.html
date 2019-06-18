@@ -19,12 +19,21 @@
                 return;
             }
             if(confirm('해당 블로그를 다운로드 하시겠습니까?')) {
+                if($('#download').attr('action') == 'preview') {
+                    alert('미리보기는 몇분 정도 소요됩니다. 창을 닫지 마시고 기다리시고 결과를 확인해주세요');
+                }
                 this.submit();
             }
+            $('#download').attr('action','queue');
         });
 
         $('#blogBaseUrl').focus();
     });
+
+    function preview() {
+        $('#download').attr('action','preview');
+        $('#download').submit();
+    }
 </script>
 </head>
 <body>
@@ -38,10 +47,13 @@
     </span>
 </span>
 
+<div th:if="${previewBlog != null}">
+    * <a th:href="'http://samba.iptime.org/ee/' + ${previewBlog.userId} + '/public'" th:text="'요청하신 ' + ${previewBlog.blogBaseUrl} + ' 미리보기가 준비되었습니다. 여기를 클릭해주세요'"></a>
+</div>
+
 <div th:text="'* 남은 저장공간 : ' + ${usableSpace} + 'gb'">
 </div>
 
-</ul>
 <span th:if="${currentBlog != null}">
     <span th:if="${currentBlog.currentPost == null}">
         * <a th:href="${currentBlog.blogBaseUrl}" th:text="'현재 ' + ${currentBlog.blogBaseUrl} + ' 을(를) 다운로드 중입니다.'">
@@ -56,6 +68,7 @@
 <h2>안내</h2>
 <ol>
     <li>Egloos 블로그 이사를 쉽게 하기 위해 <a href="https://gohugo.io/">Hugo</a>를 이용해서 html로 변환합니다.</li>
+    <li>'미리보기'하면 해당 블로그의 최근 15개 글만 가져옵니다(대기 하지 않고 요청 즉시 가져옵니다)</li>
     <li>1개 글을 다운로드 받는데 2초 정도 걸립니다. 전체 글이 1000개라면 30분 정도 소요됩니다.</li>
     <li>임시저장 완료 시 이메일로 다운로드 주소를 보내드립니다.</li>
     <li>이메일로 받은 압축파일을 해제하신 후 public 폴더의 index.html을 사용하시는 브라우저로 열어서 확인해주세요. 이 폴더를 웹서버에 업로드 하시면 이사가 완료 됩니다.</li>
@@ -88,6 +101,7 @@
                 <input type="text" id="email" name="email" placeholder="임시저장 완료알림을 받을 이메일 주소를 정확하게 적어주세요" style="width:60%"/>
             </li>
         </ul>
+        <input type="button" value="미리보기" onclick="preview()"/>
         <input type="submit" value="다운로드"/>
     </form>
 </span>
