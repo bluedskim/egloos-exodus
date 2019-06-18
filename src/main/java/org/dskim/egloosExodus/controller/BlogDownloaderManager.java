@@ -52,7 +52,6 @@ public class BlogDownloaderManager {
         } else {
             logger.debug("resuming blog.getCurrentPostUrl()={}", blog.getCurrentPostUrl());
             blog.setBlogBaseUrl(blog.getCurrentPostUrl());
-            hugo.setBlog(blog);
         }
 
         try {
@@ -66,7 +65,7 @@ public class BlogDownloaderManager {
         //egloosBlogDownloader.downLoadBlog("blogName", "news.egloos.com"); // 성공
         //egloosBlogDownloader.downLoadBlog("blogName", "jculture.egloos.com"); //실패
 
-        hugo.generateStaticFles();
+        hugo.generateStaticFles(blog);
         this.currentBlog = null;
 
         blog.setDownloadEndDate(new DateTime());

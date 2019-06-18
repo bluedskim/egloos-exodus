@@ -28,12 +28,6 @@ import java.util.List;
 public class EgloosBlogDownloader {
 	private static final Logger logger = LogManager.getLogger(EgloosBlogDownloader.class);
 
-	// 블로그 제목 ex) 하고 싶은 걸 하세요 Do What You Want
-	String blogName = null;
-
-	// 블로그 주소	ex) http://shed.egloos.com
-	String blogBaseUrl = null;
-
 	//int currentBlogNo = 1;
 	//int currentBlogNo = 100;
 	int currentBlogNo = 113;
@@ -56,17 +50,17 @@ public class EgloosBlogDownloader {
 	 * @throws Exception
 	 */
 	public boolean downLoadBlog(StaticSiteGeneratorDelegator siteGen, Blog blog) throws Exception {
-		String blogBaseUrl = blog.getBlogBaseUrl();
-		logger.info("downloading blogBaseUrl={}", blogBaseUrl);
+		logger.info("downloading blogBaseUrl={}", blog.getBlogBaseUrl());
 
 		boolean isSuccess = false;
 		isDownloading = true;
-		this.blogName = blogName;
 		//this.blogBaseUrl = StringUtils.substringBeforeLast(blogBaseUrl, "/");
-		this.blogBaseUrl = "http://" + blog.getUserId() + ".egloos.com";
+		//this.blogBaseUrl = "http://" + blog.getUserId() + ".egloos.com";
 
-		String postUrl = getFirstPostUrl(blogBaseUrl);
+		String postUrl = getFirstPostUrl(blog);
 		Post post = null;
+
+		//blog.setBlogBaseUrl("http://" + blog.getUserId() + ".egloos.com");
 
 		do {
 			//long sleepTime = minSleepTime * 1000 * (1L + (long) (Math.random() * (3L - 1L)));
@@ -75,7 +69,7 @@ public class EgloosBlogDownloader {
 
 			do {
 				try {
-					post = getPost(postUrl);
+					post = getPost(blog, postUrl);
 				} catch(Exception e) {
 					post = null;
 					logger.error("exception! retryCount={}, sleepTime={}", retryCount, sleepTime, e);
@@ -84,7 +78,7 @@ public class EgloosBlogDownloader {
 				}
 			} while (post == null && retryCount <= 5);
 
-			siteGen.createPost(post);
+			siteGen.createPost(blog, post);
 			postUrl = post.getPrevPostUrl();
 
 			blog.setCurrentPostUrl(post.getUrl());
@@ -97,8 +91,6 @@ public class EgloosBlogDownloader {
 
 		} while (postUrl != null);
 
-		this.blogName = null;
-		this.blogBaseUrl = null;
 		currentBlogNo = 1;
 		isDownloading = false;
 
@@ -108,15 +100,14 @@ public class EgloosBlogDownloader {
 
 	/**
 	 * 해당 블로그의 첫번째 글 주소를 가져온다.
-	 * @param entryUrl
+	 * @param blog
 	 * @return
 	 * @throws IOException
 	 */
-	public String getFirstPostUrl(String entryUrl) throws IOException {
-		logger.debug("entryUrl={}", entryUrl);
+	private String getFirstPostUrl(Blog blog) throws IOException {
 		String firstPostUrl = null;
 
-		Document document = Jsoup.connect(entryUrl).get();
+		Document document = Jsoup.connect(blog.getBlogBaseUrl()).get();
 		logger.debug("document.title()={}", document.title());
 
 		/*
@@ -133,13 +124,13 @@ public class EgloosBlogDownloader {
 		}
 
 		Element postAnchor = document.selectFirst("h2.entry-title > a");
-		firstPostUrl = blogBaseUrl + "/" + postAnchor.attr("href");
+		firstPostUrl = "http://" + blog.getUserId() + ".egloos.com/" + postAnchor.attr("href");
 		logger.debug("firstPostUrl={}", firstPostUrl);
 
 		return firstPostUrl;
 	}
 
-	public Post getPost(String postUrl) throws Exception {
+	private Post getPost(Blog blog, String postUrl) throws Exception {
 		if(postUrl == null) return null;
 		Post post = new Post();
 		post.setUrl(postUrl);
@@ -262,7 +253,7 @@ public class EgloosBlogDownloader {
 
 		Element prevPostAnchor = document.selectFirst("div.next > a");
 		if(prevPostAnchor != null) {
-			post.setPrevPostUrl(blogBaseUrl + prevPostAnchor.attr("href"));
+			post.setPrevPostUrl("http://" + blog.getUserId() + ".egloos.com/" + prevPostAnchor.attr("href"));
 		} else {
 			logger.debug("마지막 postUrl={}", postUrl);
 		}
@@ -272,7 +263,8 @@ public class EgloosBlogDownloader {
 	}
 
 	/**
-	 * 해당 페이지의 블로그 내용을 읽어온다.
+	 * @deprecated
+	 * 해당 페이지의 글들의 내용을 읽어온다(이글루 블로그는 한 페이지에 여러개의 글이 있음)
 	 * 마지막 블로그라면 null 반환
 	 *
 	 * @param blogPostUrl
@@ -388,8 +380,9 @@ public class EgloosBlogDownloader {
 	}
 
 	/**
-	 * 잘 동작하지 않더라. 그래서 md로 변환하지 않고 html 을 그대로 삽입할 것임
 	 * @deprecated
+	 * 잘 동작하지 않더라. 그래서 md로 변환하지 않고 html 을 그대로 삽입할 것임
+	 *
 	 * @param html
 	 * @return
 	 * @throws Exception

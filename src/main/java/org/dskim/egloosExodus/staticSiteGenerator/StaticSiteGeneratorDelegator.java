@@ -7,12 +7,12 @@ import java.io.IOException;
 
 public interface StaticSiteGeneratorDelegator {
 	void init(Blog blog, String themeName) throws Exception;
-	String saveResourceFromUrl(String[] imageUrl) throws IOException;
+	String saveResourceFromUrl(Blog blog, String[] imageUrl) throws IOException;
 
 	/**
 	 *
 	 * @param post
 	 */
-	void createPost(Post post) throws Exception;
-	String generateStaticFles() throws Exception;
+	void createPost(Blog blog, Post post) throws Exception;
+	String generateStaticFles(Blog blog) throws Exception;
 }

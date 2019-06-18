@@ -66,9 +66,6 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	@Value(("${senderMailpw}"))
 	String senderMailpw;
 
-	// 현재 다운로드 중 블로그
-	Blog blog;
-
 	/**
 	 * 블로그별로 호출해야 함
 	 *
@@ -79,7 +76,6 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	@Override
 	public void init(Blog blog, String themeName) throws Exception {
 		logger.debug("blogName={}", blog.getBlogName());
-		this.blog = blog;
 
 		callCmd(new String[]{"rm", "-rf", rootDir + File.separator + blog.getUserId()}, null);
 		//callCmd(new String[]{"hugo", "new", "site", rootDir + File.separator + baseDir}, null);
@@ -94,7 +90,7 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 		obj.put("theme", themeName);
 
 		// ananke theme 에 featured 이미지 추가
-		String egloosProfileImagePath = saveResourceFromUrl(getEgloosProfileImage(blog));
+		String egloosProfileImagePath = saveResourceFromUrl(blog, getEgloosProfileImage(blog));
 		logger.debug("egloosProfileImagePath={}", egloosProfileImagePath);
 		if(egloosProfileImagePath != null) {
 			Map<String, Object> params = (HashMap<String, Object>)obj.get("params");
@@ -143,7 +139,7 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	 * @throws IOException
 	 */
 	@Override
-	public String saveResourceFromUrl(String[] resourceUrl) throws IOException {
+	public String saveResourceFromUrl(Blog blog, String[] resourceUrl) throws IOException {
 		try{
 			logger.debug("resourceUrl={} / {}", resourceUrl[0], resourceUrl[1]);
 			FileUtils.copyURLToFile(new URL(resourceUrl[1]), new File(rootDir + File.separator + blog.getUserId() + "/content" + resourceUrl[0]),5000,5000);
@@ -159,7 +155,7 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	 * @param post
 	 */
 	@Override
-	public void createPost(Post post) throws Exception {
+	public void createPost(Blog blog, Post post) throws Exception {
 		// post를 저장하려면 1gb의 여유공간이 필요
 		isDiskAvailable(1024 * 1024 * 1024);
 
@@ -220,7 +216,7 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 
 		if(post.getAttachments() != null) {
 			for (String[] attachment : post.getAttachments()) {
-				saveResourceFromUrl(attachment);
+				saveResourceFromUrl(blog, attachment);
 			}
 		}
 	}
@@ -231,7 +227,7 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	 * @throws Exception
 	 */
 	@Override
-	public String generateStaticFles() throws Exception {
+	public String generateStaticFles(Blog blog) throws Exception {
 		// hugo로 html생성하려면 원래 폴더 사이즈의 1.2의 여유공간이 필요
 		isDiskAvailable(FileUtils.sizeOfDirectory(new File(rootDir + File.separator + blog.getUserId())) * 1.2);
 		logger.debug("calling hugo. baseDir={}", blog.getUserId());
