@@ -18,10 +18,10 @@
                 alert('이메일 주소를 입력해주세요');
                 return;
             }
+            if($('#download').attr('action') == 'preview') {
+                alert('미리보기는 몇분 정도 소요됩니다. 창을 닫지 마시고 기다리신 후 결과를 확인해주세요');
+            }
             if(confirm('해당 블로그를 다운로드 하시겠습니까?')) {
-                if($('#download').attr('action') == 'preview') {
-                    alert('미리보기는 몇분 정도 소요됩니다. 창을 닫지 마시고 기다리시고 결과를 확인해주세요');
-                }
                 this.submit();
             }
             $('#download').attr('action','queue');
