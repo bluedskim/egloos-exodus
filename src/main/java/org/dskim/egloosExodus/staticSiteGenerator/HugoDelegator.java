@@ -254,7 +254,7 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	}
 
 	public boolean isDiskAvailable(double minStoage) throws InterruptedException {
-		logger.debug("저장공간 체크 minStoage={}gb, usableSpace={}gb", minStoage /1024 /1024 /1024, new File("/").getUsableSpace() /1024 /1024 /1024);
+		logger.debug("저장공간 체크 minStoage={}gb, usableSpace={}mb", minStoage /1024 /1024 /1024, new File("/").getUsableSpace() /1024 /1024);
 		while(new File("/").getUsableSpace() < minStoage) {
 			logger.debug("저장공간 부족! minStoage={}gb, usableSpace={}gb", minStoage /1024 /1024 /1024, new File("/").getUsableSpace() /1024 /1024 /1024);
 			Thread.sleep(1000 * 10 * 6);

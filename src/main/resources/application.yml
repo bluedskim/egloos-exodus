@@ -62,6 +62,11 @@ spring:
     username: ee
     password: DcvqyQDtuFt3C73m
 
+logging:
+  file: logs/ee.log
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss} %highlight(%-5p) %green(%c{1}.%M):%L - %m%n"
+
 hugo:
   resourcesDir:
 

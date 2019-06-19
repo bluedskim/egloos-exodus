@@ -187,6 +187,7 @@ public class EgloosBlogDownloader {
 		}
 
 		Elements images = blogPost.select("img[src~=(?i)\\.(png|jpe?g|gif)]");
+		logger.debug("이미지 개수=[{}]", images == null ? "null" : images.size());
 		for (Element image : images) {
 			/*
 			System.out.println("\nsrc : " + image.attr("src"));
@@ -197,7 +198,7 @@ public class EgloosBlogDownloader {
 			// 이런 이미지들은 제외 http://md.egloos.com/img/icon/ico_badreport.png
 			if(image.attr("src").contains("/md") == false
 					&& image.attr("src").contains("/profile") == false ) {
-				logger.debug(" \t img src={}", image.attr("src"));
+				//logger.debug(" \t img src={}", image.attr("src"));
 				if(post.getAttachments() == null) {
 					post.setAttachments(new ArrayList());
 				}
@@ -207,7 +208,6 @@ public class EgloosBlogDownloader {
 				image.attr("src", tempImagePath);
 			}
 		}
-		logger.debug("images.size()={}", images == null ? "null" : images.size());
 
 		Element hentry = blogPost.selectFirst("div.hentry");
 		// 여기서 이런 증상 발생~!!! http://luckcrow.egloos.com/2146639

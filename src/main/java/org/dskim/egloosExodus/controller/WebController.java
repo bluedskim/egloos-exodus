@@ -24,6 +24,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileFilter;
 import java.text.SimpleDateFormat;
@@ -141,7 +142,8 @@ public class WebController {
      */
     @GetMapping("deleteOldBlog")
     @ResponseBody
-    @Scheduled(fixedDelay = 3600000, initialDelay = 0)    // 한시간에 한번씩
+    @PostConstruct  // 기동하자마자 무조건 한번 돈다
+    @Scheduled(fixedDelay = 3600000)    // 한시간에 한번씩
     public JSONObject deleteOldBlog(
             //@RequestParam(value="blogDurationMin", required=false) Long blogDurationMin
         ) throws Exception {
@@ -177,6 +179,7 @@ public class WebController {
         deleteOldBlogRtn.put("deletedCount", deletedCount);
         deleteOldBlogRtn.put("blogDurationMin", blogDurationMin);
         deleteOldBlogRtn.put("limitDateTime", limitDateTime.toDate());
+        logger.debug("deleteOldBlogRtn={}", deleteOldBlogRtn.toJSONString());
         return deleteOldBlogRtn;
     }
 }

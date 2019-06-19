@@ -45,6 +45,7 @@ Spring Integration 으로 posting Lister, html downloader, html-to-markdown tran
 * ~~서버 리스타트시 자동 실행 cron에 등록~~
 * ~~저장 공간 문제(하나의 블로그가 10G?)~~
 * ~~미리보기~~
+* ~~제대로 로깅하기~~
 
 -------------- ver1.1 --------------
 * 통계(현재까지 다운로드한 블로그 리스트, 총 블로그 개수, 총 용량 ...)
@@ -58,8 +59,5 @@ Spring Integration 으로 posting Lister, html downloader, html-to-markdown tran
 * 모바일 사이트에서 다운로드 받는게 더 낫지 않나?
 * 카테고리 목록
 * live reload
-* 제대로 로깅하기
-** 불필요한 로깅 없애기 (html태그)
 * 화면 리프레시 없이 정보변경가능하도록 web socket 사용
-
 * 테마선택
