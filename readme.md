@@ -46,6 +46,7 @@ Spring Integration 으로 posting Lister, html downloader, html-to-markdown tran
 * ~~저장 공간 문제(하나의 블로그가 10G?)~~
 * ~~미리보기~~
 * ~~제대로 로깅하기~~
+* ~~작성시각을 모두 수치로 변경. ananke theme 에서 single.html 변경함~~
 
 -------------- ver1.1 --------------
 * 통계(현재까지 다운로드한 블로그 리스트, 총 블로그 개수, 총 용량 ...)
