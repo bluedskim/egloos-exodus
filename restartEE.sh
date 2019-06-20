@@ -1,0 +1,2 @@
+./runEE.sh
+./stopEE.sh
