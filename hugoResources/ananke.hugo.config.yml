@@ -111,4 +111,3 @@ taxonomies:
 params:
   custom_css: [custom.css]
   featured_image:
-  date_format: "2006/01/02 18시00분"

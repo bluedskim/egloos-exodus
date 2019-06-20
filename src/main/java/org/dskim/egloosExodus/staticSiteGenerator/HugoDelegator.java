@@ -1,8 +1,12 @@
 package org.dskim.egloosExodus.staticSiteGenerator;
 
+import com.electronwill.nightconfig.core.Config;
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
+import jodd.io.FileUtil;
 import lombok.Data;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -30,9 +34,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.*;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Hugo 를 이용한 정적 사이트 생성
@@ -70,43 +72,68 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	 * 블로그별로 호출해야 함
 	 *
 	 * @param blog 블로그
-	 * @param themeName 사용할 테마명
 	 * @throws Exception
 	 */
 	@Override
-	public void init(Blog blog, String themeName) throws Exception {
+	public void init(Blog blog) throws Exception {
 		logger.debug("blogName={}", blog.getBlogName());
 
 		callCmd(new String[]{"rm", "-rf", rootDir + File.separator + blog.getUserId()}, null);
 		//callCmd(new String[]{"hugo", "new", "site", rootDir + File.separator + baseDir}, null);
 		callCmd(new String[]{"hugo", "new", "site", rootDir + File.separator + blog.getUserId(), "-f", "yml"}, null);
 
-		//기본 테마 압축해제
-		//callCmd(new String[]{"tar", "-zxvf", rootDir + File.separator + "ananke.tgz", "-C", rootDir + File.separator + baseDir + File.separator + "themes/ananke", "--strip-components=1"}, null);
-		callCmd(new String[]{"tar", "-zxvf", hugoResourcesDir + File.separator + themeName + ".tgz", "-C", rootDir + File.separator + blog.getUserId() + File.separator + "themes"}, null);
+		//기본 테마 압축해제 후 설정 작업
+		initTheme(blog);
+	}
 
-		// config에 테마 추가
-		Map<String, Object> obj = yaml.load(new FileReader(hugoResourcesDir + File.separator + "hugo.config.yml"));
-		obj.put("theme", themeName);
+	private void initTheme(Blog blog) throws Exception {
+		String themeName = blog.getThemeName();
+
+		callCmd(new String[]{"tar", "-zxvf", hugoResourcesDir + File.separator + themeName + ".tgz", "-C", rootDir + File.separator + blog.getUserId() + File.separator + "themes"}, null);
 
 		// ananke theme 에 featured 이미지 추가
 		String egloosProfileImagePath = saveResourceFromUrl(blog, getEgloosProfileImage(blog));
-		logger.debug("egloosProfileImagePath={}", egloosProfileImagePath);
-		if(egloosProfileImagePath != null) {
-			Map<String, Object> params = (HashMap<String, Object>)obj.get("params");
-			params.put("featured_image", egloosProfileImagePath);
+
+		switch (themeName) {
+			case "ananke" :
+				// config에 테마 추가
+				Map<String, Object> obj = yaml.load(new FileReader(hugoResourcesDir + File.separator + "ananke.hugo.config.yml"));
+				obj.put("theme", themeName);
+
+				logger.debug("egloosProfileImagePath={}", egloosProfileImagePath);
+				if(egloosProfileImagePath != null) {
+					Map<String, Object> params = (HashMap<String, Object>)obj.get("params");
+					params.put("featured_image", egloosProfileImagePath);
+				}
+
+				obj.put("title", blog.getBlogName());
+				yaml.dump(obj, new FileWriter(rootDir + File.separator + blog.getUserId() + File.separator + "config.yml"));
+				break;
+			case "hugo-theme-bootstrap4-blog" :
+				// 기본 설정을 복사
+				FileUtil.copy(new File(hugoResourcesDir + File.separator + "hugo-theme-bootstrap4-blog.toml")
+						, new File(rootDir + File.separator + blog.getUserId() + File.separator + "config.toml"));
+
+				CommentedFileConfig config = CommentedFileConfig.builder(rootDir + File.separator + blog.getUserId() + File.separator + "config.toml")
+						//.defaultResource("/home/bluedskim/IdeaProjects/egloosexodus/hugoResources/hugo-theme-bootstrap4-blog.toml")
+						.autosave().build();
+				config.load(); // This actually reads the config
+				config.set("title", blog.getBlogName());
+
+				List<Config> sidebar = config.get("menu.sidebar"); // Generic return type!
+				logger.debug("sidebar.size()={}, sidebar={}", sidebar.size(), sidebar);
+
+				sidebar.get(1).set("url", "http://" + blog.getUserId() + ".egloos.com");
+				config.set("menu.sidebar", sidebar);
+
+				config.set("params.author", blog.getUserId());
+				config.set("params.description", blog.getUserId() + "의 블로그");
+				config.set("params.sidebar.about", blog.getUserId() + "의 **" + blog.getBlogName() + "**");
+				break;
+			default:
 		}
-
-		obj.put("title", blog.getBlogName());
-		yaml.dump(obj, new FileWriter(rootDir + File.separator + blog.getUserId() + File.separator + "config.yml"));
-		/*
-		JSONObject hugoConfig = (JSONObject)JSONValue.parse(FileUtils.readFileToString(new File(rootDir + File.separator + baseDir + File.separator + "config.json"), "utf8"));
-		hugoConfig.put("theme", "ananke");
-		FileUtils.writeStringToFile(new File(rootDir + File.separator + baseDir + File.separator + "config.json"), hugoConfig.toJSONString(), "utf8");
-		*/
-
 		//static 에 필요 파일들 복사
-		FileUtils.copyFile(new File(hugoResourcesDir + File.separator + "hugo.custom.css")
+		FileUtils.copyFile(new File(hugoResourcesDir + File.separator + themeName + ".hugo.custom.css")
 				, new File(rootDir + File.separator + blog.getUserId() + File.separator + "static" + File.separator + "custom.css"));
 	}
 
@@ -228,6 +255,8 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 	 */
 	@Override
 	public String generateStaticFles(Blog blog) throws Exception {
+		updateHugoConf(blog);
+
 		// hugo로 html생성하려면 원래 폴더 사이즈의 1.2의 여유공간이 필요
 		isDiskAvailable(FileUtils.sizeOfDirectory(new File(rootDir + File.separator + blog.getUserId())) * 1.2);
 		logger.debug("calling hugo. baseDir={}", blog.getUserId());
@@ -251,6 +280,29 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 		sendDownloadCompleteAlarm(blog, senderMailId, senderMailpw);
 
 		return generateStaticFlesRtn;
+	}
+
+	private void updateHugoConf(Blog blog) {
+		switch (blog.getThemeName()) {
+			case "hugo-theme-bootstrap4-blog" :
+				CommentedFileConfig config = CommentedFileConfig.builder(rootDir + File.separator + blog.getUserId() + File.separator + "config.toml")
+						//.defaultResource("/home/bluedskim/IdeaProjects/egloosexodus/hugoResources/hugo-theme-bootstrap4-blog.toml")
+						.autosave().build();
+				config.load(); // This actually reads the config
+				File categoryDir = new File(rootDir + File.separator + blog.getUserId() + File.separator + "content" + File.separator + "posts");
+				File[] categoryDirs = categoryDir.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
+
+				List<Config> navbar = new ArrayList<>();
+				for (File category : categoryDirs) {
+					Config tempConfig = Config.inMemory();
+					tempConfig.set("name", category.getName());
+					tempConfig.set("url", "/categories/" + category.getName());
+					navbar.add(tempConfig);
+				}
+				config.set("menu.navbar", navbar);
+				break;
+			default:
+		}
 	}
 
 	public boolean isDiskAvailable(double minStoage) throws InterruptedException {

@@ -1,5 +1,6 @@
 package org.dskim.egloosExodus;
 
+import org.dskim.egloosExodus.model.Blog;
 import org.dskim.egloosExodus.staticSiteGenerator.HugoDelegator;
 import org.dskim.egloosExodus.processor.EgloosBlogDownloader;
 import org.slf4j.Logger;
@@ -33,6 +34,6 @@ public class EgloosBlogDownloaderTest implements CommandLineRunner {
         logger.info("EXECUTING : command line runner");
         //egloosBlogDownloader.downLoadBlog(hugo, blogBaseUrl);
         //egloosBlogDownloader.getFirstPostUrl("http://shed.egloos.com");
-        egloosBlogDownloader.getPost("http://shed.egloos.com/4068678");
+        egloosBlogDownloader.getPost(new Blog(), "http://shed.egloos.com/4068678");
     }
 }

@@ -6,6 +6,11 @@
     <mapping directory="$PROJECT_DIR$/blogRootDir/adrush/themes/hugo-theme-bootstrap4-blog" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/blogRootDir/adrush/themes/inkblotty" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/blogRootDir/chilbok/themes/inkblotty" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/blogRootDir/nachito/themes/hugo-theme-bootstrap4-blog" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/blogRootDir/nomadrampa/themes/hugo-theme-bootstrap4-blog" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/blogRootDir/shed/themes/home/bluedskim/documents/githubBlog/shed/themes/hugo-theme-bootstrap4-blog" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/blogRootDir/shed/themes/hugo-theme-bootstrap4-blog" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/blogRootDir/totheno1/themes/hugo-theme-bootstrap4-blog" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/blogRootDir/반달가면/themes/hugo-theme-bootstrap4-blog" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/blogRootDir/반달가면/themes/inkblotty" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/blogRootDir/반달가면/themes/jeffprod" vcs="Git" />

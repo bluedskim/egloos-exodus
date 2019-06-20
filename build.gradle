@@ -55,6 +55,10 @@ dependencies {
 
     compile group: 'net.minidev', name: 'json-smart', version: '2.3'
     compile group: 'org.yaml', name: 'snakeyaml', version: '1.24'
+    compile group: 'com.moandjiezana.toml', name: 'toml4j', version: '0.7.2'
+    compile 'org.tomlj:tomlj:1.0.0'
+    implementation 'com.electronwill.night-config:toml:3.6.0'
+
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
     // JPA 로 변경
     //compile group: 'org.dizitart', name: 'nitrite', version: '3.2.0'

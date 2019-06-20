@@ -47,18 +47,27 @@ Spring Integration 으로 posting Lister, html downloader, html-to-markdown tran
 * ~~미리보기~~
 * ~~제대로 로깅하기~~
 * ~~작성시각을 모두 수치로 변경. ananke theme 에서 single.html 변경함~~
+* 테마선택
+    * hugo-theme-bootstrap4-blog
+        * 작성 시각 표시 추가
+        * 상단 링크에 카테고리 자동 추가
+* https를 지원하는 사이트에 블로그를 올렸을 때 http로 embed 된 유튜브 재생 안됨. 무조건 https로 변경하자
 
 -------------- ver1.1 --------------
 * 통계(현재까지 다운로드한 블로그 리스트, 총 블로그 개수, 총 용량 ...)
 * static 생성 오류 시 메일 보내고 작업 초기화
+* resume 되는 경우 이메일 내용 오류 (소요 시간, 다운로드 글개수)
+
+-------------- ver2 --------------
+* 네이버 블로그 지원
+* 블로그 소유자만 다운로드 받을 수 있도록
+* 모바일 사이트에서 다운로드 받는게 더 낫지 않나?
+
+-------------- ver??? --------------
+* live reload
+* 화면 리프레시 없이 정보변경가능하도록 web socket 사용
 * theme : ugly url 기반일 때 category.html, tags.html 의 taxanomy에 링크 오류
     * 하위 페이지에서 featured image경로 오류 http://samba.iptime.org/ee/A%20Citizen%20of%20(no)%20obscure%20city/public/posts/page/2.html
     * posting별 featured_image적용 하기. 아마도 theme쪽에서 변경해야 할 듯
     * 원본에 비해 폰트가 너무 큼
-* resume 되는 경우 이메일 내용 오류 (소요 시간, 다운로드 글개수)
-* 블로그 소유자만 다운로드 받을 수 있도록
-* 모바일 사이트에서 다운로드 받는게 더 낫지 않나?
-* 카테고리 목록
-* live reload
-* 화면 리프레시 없이 정보변경가능하도록 web socket 사용
-* 테마선택
+    * 카테고리 목록

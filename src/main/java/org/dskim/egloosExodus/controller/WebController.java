@@ -106,7 +106,7 @@ public class WebController {
         blog.setServiceName(StringUtils.substringBetween(blog.getBlogBaseUrl(), blog.getUserId() + ".", ".com"));
         logger.debug("previewBlog={}", blog);
 
-        hugo.init(blog, "ananke");
+        hugo.init(blog);
         egloosBlogDownloader.downLoadBlog(hugo, blog, true, maxPostCount);
         hugo.generateStaticFles(blog);
 

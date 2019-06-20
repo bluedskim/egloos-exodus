@@ -37,7 +37,7 @@
 </script>
 </head>
 <body>
-<h1><a href="">Egloos Exodus</a></h1>
+<h1><a href="/ee">Egloos Exodus</a></h1>
 <span th:if="${alreadyRegisteredBlogCount != null}">
     <span th:if="${alreadyRegisteredBlogCount == 0}">
         * <a th:href="${addedBlog.blogBaseUrl}" th:text="${addedBlog.blogBaseUrl} + '을(를) 다운로드 대기 리스트에 추가하였습니다.'"></a>
@@ -99,6 +99,13 @@
             <li>
                 <label for="email">이메일 : </label>
                 <input type="text" id="email" name="email" placeholder="임시저장 완료알림을 받을 이메일 주소를 정확하게 적어주세요" style="width:60%"/>
+            </li>
+            <li>
+                <label for="themeName">테마 : </label>
+                <select id="themeName" name="themeName">
+                    <option value="hugo-theme-bootstrap4-blog">hugo-theme-bootstrap4-blog</option>
+                    <option value="ananke">ananke</option>
+                </select>
             </li>
         </ul>
         <input type="button" value="미리보기" onclick="preview()"/>

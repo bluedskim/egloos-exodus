@@ -131,7 +131,7 @@ public class EgloosBlogDownloader {
 		return firstPostUrl;
 	}
 
-	private Post getPost(Blog blog, String postUrl) throws Exception {
+	public Post getPost(Blog blog, String postUrl) throws Exception {
 		if(postUrl == null) return null;
 		Post post = new Post();
 		post.setUrl(postUrl);

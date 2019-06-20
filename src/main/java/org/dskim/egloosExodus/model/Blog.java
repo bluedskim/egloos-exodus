@@ -37,6 +37,9 @@ public class Blog {
 	long fileSize;
 	//List<Post> postList;
 
+	@Column(columnDefinition = "varchar(255) default 'ananke'")
+	String themeName;
+
 	public Blog() {
 		super();
 		regDate = new DateTime();
@@ -45,5 +48,11 @@ public class Blog {
 	public Blog(String userId) {
 		this();
 		this.userId = userId;
+	}
+
+	public Blog(String userId, String themeName) {
+		this();
+		this.userId = userId;
+		this.themeName = themeName;
 	}
 }

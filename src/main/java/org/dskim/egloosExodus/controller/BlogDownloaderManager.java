@@ -45,7 +45,7 @@ public class BlogDownloaderManager {
 
         // resume 하는 경우가 아니라면 초기화 한다.
         if(blog.getCurrentPostUrl() == null) {
-            hugo.init(blog, "ananke");
+            hugo.init(blog);
 
             blog.setDownloadStartDate(new DateTime());
             blogRepo.save(blog);
