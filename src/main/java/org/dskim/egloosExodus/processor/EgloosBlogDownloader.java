@@ -157,6 +157,18 @@ public class EgloosBlogDownloader {
 			신고.parent().parent().remove();
 		}
 
+		Elements embedTags = blogPost.select("embed");
+		logger.debug("embedTags.size()={}, embedTags={}", embedTags.size(), embedTags);
+
+		Elements iframeTags = blogPost.select("iframe");
+		embedTags.addAll(iframeTags);
+		for (Element embedTag : embedTags) {
+			if(embedTag.attr("src").contains("youtube.com") == true ) {
+				embedTag.attr("src", embedTag.attr("src").replace("http://", "https://"));
+			}
+		}
+		logger.debug("secured embedTags.size()={}, embedTags={}", embedTags.size(), embedTags);
+
 		//logger.debug("blogPost={}", blogPost);
 		Element postTitleArea = blogPost.select("div.post_title_area").first();
 		//logger.debug("entry-title={}", postTitleArea);

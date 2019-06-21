@@ -81,6 +81,8 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 		callCmd(new String[]{"rm", "-rf", rootDir + File.separator + blog.getUserId()}, null);
 		//callCmd(new String[]{"hugo", "new", "site", rootDir + File.separator + baseDir}, null);
 		callCmd(new String[]{"hugo", "new", "site", rootDir + File.separator + blog.getUserId(), "-f", "yml"}, null);
+		//mongoose-free-6.9 윈도우용 웹서버 복사
+		callCmd(new String[]{"tar", "-zxvf", hugoResourcesDir + File.separator + "mongoose-free-6.9.tgz", "-C", rootDir + File.separator + blog.getUserId()}, null);
 
 		//기본 테마 압축해제 후 설정 작업
 		initTheme(blog);

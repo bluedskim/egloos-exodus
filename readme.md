@@ -15,6 +15,7 @@ Spring Integration 으로 posting Lister, html downloader, html-to-markdown tran
 * 다운 받은 html을 이용해 Hugo 로 블로그를 생성함.
 * 한번에 하나의 블로그만 다운로드 함(가령 aaa.egloos.com이 처리중이라면 bbb.egloos.com을 동시에 처리하지 않음)
 * 2초 정도에 한개의 글을 다운로드
+* 다운로드를 리셋하기 : UPDATE `ee_prod`.`blog` SET `current_post_url` = NULL, `download_end_date` = NULL, `is_downloaded` = b'0' WHERE `blog`.`id` = 3;
 
 <해야 할 작업>
 * ~~설정파일을 yaml로 변경~~
