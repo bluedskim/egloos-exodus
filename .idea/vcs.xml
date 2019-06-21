@@ -12,7 +12,9 @@
     <mapping directory="$PROJECT_DIR$/blogRootDir/nachito/themes/hugo-theme-bootstrap4-blog" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/blogRootDir/nomadrampa/themes/hugo-theme-bootstrap4-blog" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/blogRootDir/shed/themes/hugo-theme-bootstrap4-blog" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/blogRootDir/sosion/themes/hugo-theme-bootstrap4-blog" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/blogRootDir/totheno1/themes/hugo-theme-bootstrap4-blog" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/blogRootDir/veteran1/themes/hugo-theme-bootstrap4-blog" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/blogRootDir/wivern/themes/hugo-theme-bootstrap4-blog" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/blogRootDir/yuro/themes/hugo-theme-bootstrap4-blog" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/blogRootDir/반달가면/themes/hugo-theme-bootstrap4-blog" vcs="Git" />

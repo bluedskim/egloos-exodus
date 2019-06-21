@@ -46,6 +46,9 @@ public class WebController {
     @Value("${blog.durationMin}")
     long blogDurationMin;
 
+    @Value("${version}")
+    String version;
+
     @Value(("${blog.rootDir}"))
     String rootDirPath;
 
@@ -62,6 +65,7 @@ public class WebController {
 
         Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE, Sort.by(Sort.Direction.ASC, "regDate"));
         model.addAttribute("waitingList", blogRepo.findAllByIsDownloaded(false, pageable));
+        model.addAttribute("version", version);
         return "index";
     }
 

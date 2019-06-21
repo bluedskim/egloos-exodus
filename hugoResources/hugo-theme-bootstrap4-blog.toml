@@ -4,7 +4,8 @@ baseurl = "/"
 canonifyURLs = false
 relativeURLs = true
 hasCJKLanguage = true
-languageCode = "ko-KR"
+languageCode = "ko"
+DefaultContentLanguage = "ko"
 title = "Do What You Want To Do"
 theme = "hugo-theme-bootstrap4-blog"
 # number of posts to show on home/category/tag pages (Default: 10)
@@ -94,10 +95,6 @@ publishDir = "public"
     # for example: nytimes, flickr, NatGeo, etc).
     # See: https://dev.twitter.com/cards/types/summary-large-image
     twitter = "username"
-
-# Default content language for Hugo 0.17's multilingual support (default is "en")
-# See: https://github.com/spf13/hugo/blob/master/docs/content/content/multilingual.md
-DefaultContentLanguage = "kr"
 
 # Languages to render
 #[languages.en]

@@ -40,6 +40,8 @@ nitrite:
 #  path: /tmp/egloosExodus.nitrite
   path: /home/bluedskim/IdeaProjects/egloosexodus/egloosExodus.nitrite
 
+version: beta
+
 ---
 
 spring:

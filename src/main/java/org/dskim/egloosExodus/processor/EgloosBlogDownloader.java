@@ -105,7 +105,7 @@ public class EgloosBlogDownloader {
 	 * @return
 	 * @throws IOException
 	 */
-	private String getFirstPostUrl(Blog blog) throws IOException {
+	private String getFirstPostUrl(Blog blog) throws Exception {
 		String firstPostUrl = null;
 
 		Document document = Jsoup.connect(blog.getBlogBaseUrl()).get();

@@ -47,11 +47,12 @@ Spring Integration 으로 posting Lister, html downloader, html-to-markdown tran
 * ~~미리보기~~
 * ~~제대로 로깅하기~~
 * ~~작성시각을 모두 수치로 변경. ananke theme 에서 single.html 변경함~~
-* 테마선택
+* ~~테마선택~~
     * hugo-theme-bootstrap4-blog
         * 작성 시각 표시 추가
         * 상단 링크에 카테고리 자동 추가
 * https를 지원하는 사이트에 블로그를 올렸을 때 http로 embed 된 유튜브 재생 안됨. 무조건 https로 변경하자
+* 제목에 <> 꺽쇄 들어간 경우 제목 표시 안됨
 
 -------------- ver1.1 --------------
 * 통계(현재까지 다운로드한 블로그 리스트, 총 블로그 개수, 총 용량 ...)

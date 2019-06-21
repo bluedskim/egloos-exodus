@@ -293,11 +293,13 @@ public class HugoDelegator implements StaticSiteGeneratorDelegator {
 				File[] categoryDirs = categoryDir.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
 
 				List<Config> navbar = new ArrayList<>();
-				for (File category : categoryDirs) {
-					Config tempConfig = Config.inMemory();
-					tempConfig.set("name", category.getName());
-					tempConfig.set("url", "/categories/" + category.getName());
-					navbar.add(tempConfig);
+				if(categoryDirs != null) {
+					for (File category : categoryDirs) {
+						Config tempConfig = Config.inMemory();
+						tempConfig.set("name", category.getName());
+						tempConfig.set("url", "/categories/" + category.getName());
+						navbar.add(tempConfig);
+					}
 				}
 				config.set("menu.navbar", navbar);
 				break;
