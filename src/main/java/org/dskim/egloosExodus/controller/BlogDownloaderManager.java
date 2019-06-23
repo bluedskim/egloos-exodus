@@ -59,7 +59,7 @@ public class BlogDownloaderManager {
         }
 
         try {
-            egloosBlogDownloader.downLoadBlog(hugo, blog, false, maxPostCount);
+            egloosBlogDownloader.downLoadBlog(hugo, blog, false);
         } catch(Exception e) {
             logger.error("Exeption 발생하여 다운로드 중지!!!", e);
             this.currentBlog = null;

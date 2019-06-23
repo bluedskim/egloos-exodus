@@ -109,6 +109,7 @@ public class WebController {
      */
     @PostMapping("preview")
     public ModelAndView preview(Blog blog, @RequestParam(defaultValue = "15") int maxPostCount, Model model) throws Exception {
+        blog.setMaxPostCount(maxPostCount);
         if(blog.getBlogBaseUrl().indexOf("http://") < 0) {
             blog.setBlogBaseUrl("http://" + blog.getBlogBaseUrl());
         }
@@ -117,7 +118,7 @@ public class WebController {
         logger.debug("previewBlog={}", blog);
 
         hugo.init(blog);
-        egloosBlogDownloader.downLoadBlog(hugo, blog, true, maxPostCount);
+        egloosBlogDownloader.downLoadBlog(hugo, blog, true);
         hugo.generateStaticFles(blog);
 
         model.addAttribute("previewBlog", blog);
@@ -126,6 +127,7 @@ public class WebController {
 
     @PostMapping("queue")
     public ModelAndView addToDownloadQueue(Blog blog, Model model) throws Exception {
+        blog.setMaxPostCount(maxPostCount);
         if(blog.getBlogBaseUrl().indexOf("http://") < 0) {
             blog.setBlogBaseUrl("http://" + blog.getBlogBaseUrl());
         }

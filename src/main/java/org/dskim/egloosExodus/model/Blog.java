@@ -43,6 +43,8 @@ public class Blog {
 	@Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
 	DateTime onBlockDate ;
 
+	int maxPostCount = Integer.MAX_VALUE;
+
 	public Blog() {
 		super();
 		regDate = new DateTime();

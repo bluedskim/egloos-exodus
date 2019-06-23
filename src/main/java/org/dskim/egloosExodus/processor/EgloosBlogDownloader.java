@@ -46,12 +46,13 @@ public class EgloosBlogDownloader {
 	 *
 	 * @param siteGen
 	 * @param blog
-	 * @param maxPostCount
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean downLoadBlog(StaticSiteGeneratorDelegator siteGen, Blog blog, Boolean isPreview, int maxPostCount) throws Exception {
+	public boolean downLoadBlog(StaticSiteGeneratorDelegator siteGen, Blog blog, Boolean isPreview) throws Exception {
 		logger.info("downloading blogBaseUrl={}", blog.getBlogBaseUrl());
+
+		int maxPostCount = blog.getMaxPostCount();
 
 		boolean isSuccess = false;
 		isDownloading = true;
