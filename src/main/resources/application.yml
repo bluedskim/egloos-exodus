@@ -42,7 +42,7 @@ nitrite:
 
 version: beta
 #maxPostCount: 2147483647
-maxPostCount: 1
+maxPostCount: 10
 
 ---
 

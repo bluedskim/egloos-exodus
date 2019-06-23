@@ -43,7 +43,7 @@
         * <a th:href="${addedBlog.blogBaseUrl}" th:text="${addedBlog.blogBaseUrl} + '을(를) 다운로드 대기 리스트에 추가하였습니다.'"></a>
     </span>
     <span th:if="${alreadyRegisteredBlogCount > 0}">
-        * <a th:href="${addedBlog.blogBaseUrl}" th:text="${addedBlog.blogBaseUrl} + '은(는) 이미 요청하셨거나 변환 거부한 이력이 있어서 대기리스트에 추가되지 않았습니다.'"></a>
+        * <a th:href="${addedBlog.blogBaseUrl}" th:text="${addedBlog.blogBaseUrl} + '은(는) 이미 변환 요청하셨거나 소유자의 요청으로 거부한 이력이 있어 대기리스트에 추가되지 않았습니다.'"></a>
     </span>
 </span>
 
