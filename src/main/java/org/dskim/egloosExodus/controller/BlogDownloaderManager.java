@@ -9,6 +9,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,6 +38,9 @@ public class BlogDownloaderManager {
     @Autowired
     BlogRepository blogRepo;
 
+    @Value("${maxPostCount}")
+    int maxPostCount;
+
     Blog currentBlog;
 
     //@Async("threadPoolTaskExecutor")
@@ -55,7 +59,7 @@ public class BlogDownloaderManager {
         }
 
         try {
-            egloosBlogDownloader.downLoadBlog(hugo, blog, false, Integer.MAX_VALUE);
+            egloosBlogDownloader.downLoadBlog(hugo, blog, false, maxPostCount);
         } catch(Exception e) {
             logger.error("Exeption 발생하여 다운로드 중지!!!", e);
             this.currentBlog = null;

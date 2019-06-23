@@ -55,6 +55,9 @@ public class WebController {
     @Autowired
     BlogRepository blogRepo;
 
+    @Value("${maxPostCount}")
+    int maxPostCount;
+
     @RequestMapping("")
     public String index(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
         //logger.debug("blogDownloaderManager.getCurrentBlog()={}", blogDownloaderManager.getCurrentBlog());
@@ -66,6 +69,9 @@ public class WebController {
         Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE, Sort.by(Sort.Direction.ASC, "regDate"));
         model.addAttribute("waitingList", blogRepo.findAllByIsDownloaded(false, pageable));
         model.addAttribute("version", version);
+        model.addAttribute("maxPostCount", maxPostCount);
+        model.addAttribute("Integer_MAX_VALUE", Integer.MAX_VALUE);
+
         return "index";
     }
 
@@ -133,6 +139,8 @@ public class WebController {
 
         if(alreadyRegisteredBlogCount == 0) {
             blog = blogRepo.save(blog);
+        } else {
+            blog = blogRepo.findByUserIdAndServiceName(blog.getUserId(), blog.getServiceName());
         }
 
         return new ModelAndView("forward:/");

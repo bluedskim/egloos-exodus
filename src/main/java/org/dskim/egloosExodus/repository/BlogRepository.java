@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface BlogRepository extends PagingAndSortingRepository<Blog, Integer> {
     public List<Blog> findAllByIsDownloaded(boolean isDownloaded, Pageable pageable);
-    public List<Blog> findAllByUserIdAndServiceName(String userId, String serviceName);
+    public Blog findByUserIdAndServiceName(String userId, String serviceName);
     Long countByUserIdAndServiceName(String userId, String serviceName);
 }

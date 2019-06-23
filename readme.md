@@ -52,8 +52,11 @@ Spring Integration 으로 posting Lister, html downloader, html-to-markdown tran
     * hugo-theme-bootstrap4-blog
         * 작성 시각 표시 추가
         * 상단 링크에 카테고리 자동 추가
-* https를 지원하는 사이트에 블로그를 올렸을 때 http로 embed 된 유튜브 재생 안됨. 무조건 https로 변경하자
+* ~~https를 지원하는 사이트에 블로그를 올렸을 때 http로 embed 된 유튜브 재생 안됨. 무조건 https로 변경하자~~
+
+-------------- ver1.0 --------------
 * 제목에 <> 꺽쇄 들어간 경우 제목 표시 안됨
+* static 생성 후 카테고리의 폴더명에 특수문자가 사라짐 : rogueontie.egloos.com 그런데 여기는 잘됨 ? http://samba.iptime.org/ee/lastoshka/public/categories/aoz-re/
 
 -------------- ver1.1 --------------
 * 통계(현재까지 다운로드한 블로그 리스트, 총 블로그 개수, 총 용량 ...)
@@ -73,3 +76,9 @@ Spring Integration 으로 posting Lister, html downloader, html-to-markdown tran
     * posting별 featured_image적용 하기. 아마도 theme쪽에서 변경해야 할 듯
     * 원본에 비해 폰트가 너무 큼
     * 카테고리 목록
+
+-------------- 안하기로 한 기능 --------------
+* 운영의 blogRootDir를 ~/egloosExodus 아래로 옮김
+
+-------------- 홍보 --------------
+http://coldstar.egloos.com/7455931#15264142.01

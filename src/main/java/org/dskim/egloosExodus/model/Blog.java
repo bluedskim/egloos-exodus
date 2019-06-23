@@ -40,6 +40,9 @@ public class Blog {
 	@Column(columnDefinition = "varchar(255) default 'ananke'")
 	String themeName;
 
+	@Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+	DateTime onBlockDate ;
+
 	public Blog() {
 		super();
 		regDate = new DateTime();

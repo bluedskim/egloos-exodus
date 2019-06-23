@@ -41,6 +41,8 @@ nitrite:
   path: /home/bluedskim/IdeaProjects/egloosexodus/egloosExodus.nitrite
 
 version: beta
+#maxPostCount: 2147483647
+maxPostCount: 1
 
 ---
 
@@ -75,3 +77,5 @@ hugo:
 blog:
   # 다운로드 받은 불로그 보유기간. 1440 : 하루 / 1440000 : 1000일
   durationMin: 1440
+
+maxPostCount: 10
