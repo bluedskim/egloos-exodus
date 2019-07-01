@@ -58,6 +58,12 @@ public class WebController {
     @Value("${maxPostCount}")
     int maxPostCount;
 
+    @Value("${blog.checkOwner}")
+    boolean checkOwner;
+
+    @Value("${blog.checkOwnerString}")
+    String checkOwnerString;
+
     @RequestMapping("")
     public String index(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
         //logger.debug("blogDownloaderManager.getCurrentBlog()={}", blogDownloaderManager.getCurrentBlog());
@@ -71,6 +77,8 @@ public class WebController {
         model.addAttribute("version", version);
         model.addAttribute("maxPostCount", maxPostCount);
         model.addAttribute("Integer_MAX_VALUE", Integer.MAX_VALUE);
+        model.addAttribute("checkOwner", checkOwner);
+        model.addAttribute("checkOwnerString", checkOwnerString);
 
         return "index";
     }
@@ -117,11 +125,17 @@ public class WebController {
         blog.setServiceName(StringUtils.substringBetween(blog.getBlogBaseUrl(), blog.getUserId() + ".", ".com"));
         logger.debug("previewBlog={}", blog);
 
-        hugo.init(blog);
-        egloosBlogDownloader.downLoadBlog(hugo, blog, true);
-        hugo.generateStaticFles(blog);
+        Boolean isOwner = egloosBlogDownloader.checkOwner(blog, checkOwnerString);
+        model.addAttribute("isOwner", isOwner);
+        logger.debug("isOwner.booleanValue()={}", isOwner.booleanValue());
 
-        model.addAttribute("previewBlog", blog);
+        if(checkOwner && isOwner.booleanValue() == true) {
+            hugo.init(blog);
+            egloosBlogDownloader.downLoadBlog(hugo, blog, true);
+            hugo.generateStaticFles(blog);
+
+            model.addAttribute("previewBlog", blog);
+        }
         return new ModelAndView("forward:/");
     }
 
@@ -134,17 +148,24 @@ public class WebController {
         blog.setUserId(StringUtils.substringBetween(blog.getBlogBaseUrl(), "://", "."));
         blog.setServiceName(StringUtils.substringBetween(blog.getBlogBaseUrl(), blog.getUserId() + ".", ".com"));
         logger.debug("blog={}", blog);
-        model.addAttribute("addedBlog", blog);
 
         long alreadyRegisteredBlogCount = blogRepo.countByUserIdAndServiceName(blog.getUserId(), blog.getServiceName());
         model.addAttribute("alreadyRegisteredBlogCount", alreadyRegisteredBlogCount);
+        logger.debug("alreadyRegisteredBlogCount={}", alreadyRegisteredBlogCount);
+
+        Boolean isOwner = egloosBlogDownloader.checkOwner(blog, checkOwnerString);
+        model.addAttribute("isOwner", isOwner);
+        logger.debug("isOwner.booleanValue()={}", isOwner.booleanValue());
 
         if(alreadyRegisteredBlogCount == 0) {
-            blog = blogRepo.save(blog);
+            if(checkOwner && isOwner.booleanValue() == true) {
+                blog = blogRepo.save(blog);
+            }
         } else {
             blog = blogRepo.findByUserIdAndServiceName(blog.getUserId(), blog.getServiceName());
         }
 
+        model.addAttribute("addedBlog", blog);
         return new ModelAndView("forward:/");
     }
 

@@ -32,6 +32,8 @@ blog:
   minSleepTime: 1
   # 다운로드 받은 불로그 보유기간. 1440 : 하루 / 1440000 : 1000일
   durationMin: 1440000
+  checkOwner: true
+  checkOwnerString: exodus
 
 senderMailId: egloos.exodus
 senderMailpw: ?#H1xkUc6V
@@ -78,4 +80,7 @@ blog:
   # 다운로드 받은 불로그 보유기간. 1440 : 하루 / 1440000 : 1000일
   durationMin: 1440
 
-maxPostCount: 10
+
+
+
+

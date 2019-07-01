@@ -4,11 +4,21 @@
 <title>Egloos Exodus</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/additional-methods.min.js"></script>
 <script>
+    var checkOwner = [[${checkOwner}]];
+    var checkOwnerString = "[[${checkOwnerString}]]";
+
     $(document).ready(function(){
         $('#download').on('submit', function(e){
             e.preventDefault();
+
+            if(checkOwner) {
+                if( !confirm('블로그 소유자 확인이 필요합니다. 해당 블로그 소유자시라면 제목에 [' + checkOwnerString + '] 가 들어간 글을 임시로 올려주세요. \n 소유자 확인 후에는 지우셔도 됩니다. \n 해당 글을 올리셨습니까?')) {
+                    alert('블로그 소유자 확인이 필요합니다. 해당 블로그 소유자시라면 제목에 [' + checkOwnerString + '] 가 들어간 글을 임시로 올리신 후 다시 시도해 주세요');
+                    return;
+                }
+            }
+
             if($('#blogBaseUrl').val().length == 0) {
                 $('#blogBaseUrl').focus();
                 alert('블로그 주소를 입력해주세요');
@@ -38,14 +48,20 @@
 </head>
 <body>
 <h1><a href="/ee">Egloos Exodus</a> <span th:text="${version}"></span></h1>
-<span th:if="${alreadyRegisteredBlogCount != null}">
-    <span th:if="${alreadyRegisteredBlogCount == 0}">
+
+<div th:if="${isOwner} != null">
+    <div th:if="${isOwner} == true" th:text="'* 블로그 소유자 확인 완료. 임시로 올리신 글은 지우셔도 됩니다'"></div>
+    <div th:if="${isOwner} == false" th:text="'* 블로그 소유자 확인 실패! 해당 블로그 소유자시라면 제목에 [' + ${checkOwnerString} + '] 가 들어간 글을 임시로 올려주세요. 소유자 확인 후에는 지우셔도 됩니다.'"></div>
+</div>
+
+<div th:if="${alreadyRegisteredBlogCount != null AND addedBlog != null}">
+    <div th:if="${alreadyRegisteredBlogCount == 0 AND isOwner == true}">
         * <a th:href="${addedBlog.blogBaseUrl}" th:text="${addedBlog.blogBaseUrl} + '을(를) 다운로드 대기 리스트에 추가하였습니다.'"></a>
-    </span>
-    <span th:if="${alreadyRegisteredBlogCount > 0}">
+    </div>
+    <div th:if="${alreadyRegisteredBlogCount > 0}">
         * <a th:href="${addedBlog.blogBaseUrl}" th:text="${addedBlog.blogBaseUrl} + '은(는) 이미 변환 요청하셨거나 소유자의 요청으로 거부한 이력이 있어 대기리스트에 추가되지 않았습니다.'"></a>
-    </span>
-</span>
+    </div>
+</div>
 
 <div th:if="${previewBlog != null}">
     * <a th:href="'http://samba.iptime.org/ee/' + ${previewBlog.userId} + '/public'" th:text="'요청하신 ' + ${previewBlog.blogBaseUrl} + ' 미리보기가 준비되었습니다. 여기를 클릭해주세요'"></a>
@@ -60,7 +76,9 @@
         </a>
     </span>
     <span th:unless="${currentBlog.currentPost == null}">
-        * <a th:href="${currentBlog.currentPost.url}" th:text="'현재 ' + ${currentBlog.blogBaseUrl} + ' 의 ' + ${currentBlog.currentPostNumber} + '번째 글 ' + ${currentBlog.currentPost.title} +'(' + ${currentBlog.currentPost.date} + ') 을(를) 다운로드 중입니다.'">
+        <!--* <a th:href="${currentBlog.currentPost.url}" th:text="'현재 ' + ${currentBlog.blogBaseUrl} + ' 의 ' + ${currentBlog.currentPostNumber} + '번째 글 ' + ${currentBlog.currentPost.title} +'(' + ${currentBlog.currentPost.date} + ') 을(를) 다운로드 중입니다.'">
+        </a>-->
+        * <a th:href="${currentBlog.currentPost.url}" th:text="'현재 ' + ${currentBlog.blogBaseUrl} + ' 을(를) 다운로드 중입니다.'">
         </a>
     </span>
 </span>
@@ -109,6 +127,7 @@
                     <option value="ananke">ananke</option>
                 </select>
             </li>
+            <li th:if="${checkOwner} == true" th:text="'블로그 소유자 확인이 필요합니다. 해당 블로그 소유자시라면 제목에 [' + ${checkOwnerString} + '] 가 들어간 글을 임시로 올려주세요. 소유자 확인 후에는 지우셔도 됩니다.'"></li>
         </ul>
         <input type="button" value="미리보기" onclick="preview()"/>
         <input type="submit" value="다운로드"/>

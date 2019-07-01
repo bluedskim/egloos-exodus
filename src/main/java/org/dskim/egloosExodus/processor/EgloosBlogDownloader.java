@@ -433,4 +433,14 @@ public class EgloosBlogDownloader {
 
 		return mdStr;
 	}
+
+	public Boolean checkOwner(Blog blog, String checkOwnerString) throws Exception {
+		String firstPostUrl = null;
+
+		Document document = Jsoup.connect(blog.getBlogBaseUrl()).get();
+		logger.debug("checkOwnerString={}, document.title()={}", checkOwnerString, document.title());
+		Element anyElement = document.selectFirst("h2.entry-title:contains(" + checkOwnerString + ")");
+
+		return new Boolean(anyElement != null);
+	}
 }
