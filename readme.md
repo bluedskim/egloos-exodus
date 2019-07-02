@@ -53,8 +53,8 @@ Spring Integration 으로 posting Lister, html downloader, html-to-markdown tran
         * 작성 시각 표시 추가
         * 상단 링크에 카테고리 자동 추가
 * ~~https를 지원하는 사이트에 블로그를 올렸을 때 http로 embed 된 유튜브 재생 안됨. 무조건 https로 변경하자~~
-* 블로그 소유자만 다운로드 받을 수 있도록
-* 현재 처리중 post정보 숨기기
+* ~~블로그 소유자만 다운로드 받을 수 있도록~~
+* ~~현재 처리중 post정보 숨기기~~
 
 -------------- ver1.0 --------------
 * 제목에 <> 꺽쇄 들어간 경우 제목 표시 안됨
