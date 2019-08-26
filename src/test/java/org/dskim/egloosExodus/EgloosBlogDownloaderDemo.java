@@ -48,7 +48,7 @@ public class EgloosBlogDownloaderDemo implements CommandLineRunner {
 		logger.info("EXECUTING : command line runner");
 		Blog blog = new Blog();
 		blog.setBlogBaseUrl(blogBaseUrl);
-		egloosBlogDownloader.downLoadBlog(hugo, blog, false, Integer.MAX_VALUE);
+		egloosBlogDownloader.downLoadBlog(hugo, blog, false);
 
 		//egloosBlogDownloader.downLoadBlog("blogName", "js61030.egloos.com"); // 실패
 		//egloosBlogDownloader.downLoadBlog("blogName", "news.egloos.com"); // 성공

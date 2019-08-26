@@ -27,7 +27,7 @@ logging:
     console: "%d{yyyy-MM-dd HH:mm:ss} %highlight(%-5p) %green(%c{1}.%M):%L - %m%n"
 
 blog:
-  rootDir: /home/bluedskim/IdeaProjects/egloosexodus/blogRootDir
+  rootDir: /home/bluedskim/Documents/dev/egloosexodus/blogRootDir
   # 잘못하면 DDOS공격으로 오인 받을 수 있으므로 적당히 쉰다. (초)
   minSleepTime: 1
   # 다운로드 받은 불로그 보유기간. 1440 : 하루 / 1440000 : 1000일
