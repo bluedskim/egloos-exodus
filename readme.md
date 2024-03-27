@@ -1,3 +1,8 @@
+# 이글루스 탈출하기
+더 이상 탈출할 이글루스도 없다. 하지만 다른 블로그에서 hugo로 옮겨타고 싶은 분에게 도움이 될 수도 있으니 이 repo를 오픈한 상태로 둔다
+
+-----------
+
 이글루스(혹은 그 외 블로그에서)에서 posting를 읽어와서 hugo에서 사용가능한 md포맷으로 다운로드 하고 hugo를 이용해서 html 생성.
 
 Spring Integration 으로 posting Lister, html downloader, html-to-markdown transformer, hugo invoker를 분리한다.
